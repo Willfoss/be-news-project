@@ -115,6 +115,62 @@ describe("/api/articles", () => {
   });
 });
 
+describe("/api/articles/:article_id/comments)", () => {
+  describe("GET", () => {
+    test("GET 200: responds with an array of comments objects from a particular article to the client", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body.comments);
+          expect(body.comments.length).toBe(11);
+          body.comments.forEach((comment) => {
+            expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              article_id: 1,
+            });
+          });
+        });
+    });
+    test("GET 200: the objects within the array are sorted by the most recent comments first", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).toBeSortedBy("created_at");
+        });
+    });
+    test("GET 400: responds with a bad request error message when the article id is provided as the wrong data type", () => {
+      return request(app)
+        .get("/api/articles/one/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("GET 404: responds with a not found error message when the article id is provided as the correct data type but is out of range of the db", () => {
+      return request(app)
+        .get("/api/articles/99999/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+    test("GET 404: responds with a not found error message when the article id provided exists and is the correct data type but the article has no comments ", () => {
+      return request(app)
+        .get("/api/articles/8/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+  });
+});
+
 describe("api path does not exist tests", () => {
   test("returns a 404 status and an error message when given an invalid api path", () => {
     return request(app)
