@@ -70,7 +70,7 @@ describe("/api/articles/:article_id", () => {
           expect(body.message).toBe("bad request");
         });
     });
-    test("GET 404: responds with a bad request error message when trying to provide an article id as the correct data type but it does not exist in the db", () => {
+    test("GET 404: responds with a not found error message when trying to provide an article id as the correct data type but it does not exist in the db", () => {
       return request(app)
         .get("/api/articles/999999")
         .expect(404)
