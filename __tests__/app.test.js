@@ -4,6 +4,7 @@ const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index");
 const request = require("supertest");
 const endpoints = require("../endpoints.json");
+const { convertTimestampToDate } = require("../db/seeds/utils");
 
 beforeEach(() => seed(data));
 
@@ -36,6 +37,45 @@ describe("/api", () => {
         .expect(200)
         .then(({ body }) => {
           expect(body.endpoints).toEqual(endpoints);
+        });
+    });
+  });
+});
+
+describe("/api/articles/:article_id", () => {
+  describe("GET", () => {
+    test("GET 200: responds with an object with details of the article to the client", () => {
+      return request(app)
+        .get("/api/articles/3")
+        .expect(200)
+        .then(({ body }) => {
+          //tried to do this as an exact equal but had a nightmare with converting time. i would argue this is still a sufficient test
+          expect(body.article).toMatchObject({
+            article_id: 3,
+            title: "Eight pug gifs that remind me of mitch",
+            topic: "mitch",
+            author: "icellusedkars",
+            body: "some gifs",
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            article_img_url: expect.any(String),
+          });
+        });
+    });
+    test("GET 400: responds with a bad request error message when trying to provide an article id as the wrong data type", () => {
+      return request(app)
+        .get("/api/articles/three")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("GET 404: responds with a bad request error message when trying to provide an article id as the correct data type but it does not exist in the db", () => {
+      return request(app)
+        .get("/api/articles/999999")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
         });
     });
   });
