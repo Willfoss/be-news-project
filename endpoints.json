@@ -27,8 +27,8 @@
       ]
     }
   },
-  "GET /api/articles/:articleId": {
-    "description": "serves an object contain an article by id",
+  "GET /api/articles/:article_id": {
+    "description": "serves an object containing an article by id",
     "queries": [],
     "exampleResponse": {
       "article": {
@@ -41,6 +41,30 @@
         "created_at": "2018-05-30T15:59:13.341Z",
         "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
       }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of all comments for a particular article",
+    "queries": [],
+    "exampleResponse": {
+      "articles": [
+        {
+          "article_id": 1,
+          "comment_id": 1,
+          "author": "Hugh Jass",
+          "votes": 33,
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "body": "did you know that when Aragorn kicked the helmet...."
+        },
+        {
+          "article_id": 1,
+          "comment_id": 2,
+          "author": "Doug",
+          "votes": 16,
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "body": "what do you call a man with a spade on his head?"
+        }
+      ]
     }
   }
 }

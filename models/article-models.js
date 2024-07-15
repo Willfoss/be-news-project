@@ -24,3 +24,15 @@ exports.fetchArticles = () => {
     return rows;
   });
 };
+
+exports.fetchArticleCommentsByArticleId = (id) => {
+  const queryString = `SELECT * FROM comments 
+  WHERE article_id = $1
+  ORDER BY created_at ASC`;
+  return db.query(queryString, [id]).then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({ status: 404, message: "not found" });
+    }
+    return rows;
+  });
+};
