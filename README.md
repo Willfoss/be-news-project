@@ -1,9 +1,8 @@
-# Northcoders News API
+# News API
 
-For instructions, please head over to [L2C NC News](https://l2c.northcoders.com/courses/be/nc-news).
+# setup
 
+in order to connect to either the development or test database it's required to create the following:
 
-
---- 
-
-This portfolio project was created as part of a Digital Skills Bootcamp in Software Engineering provided by [Northcoders](https://northcoders.com/)
+    - a .env.development file with the contents PGDATABASE=nc_news
+    - a .env.test file with the contents PGDATABASE=nc_news_test
