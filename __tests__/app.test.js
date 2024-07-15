@@ -81,6 +81,40 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
+describe("/api/articles", () => {
+  describe("GET", () => {
+    test("GET 200: responds with an array of articles objects to the client including a comment count and excluding the article body", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          body.articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+            expect(article.hasOwnProperty("body")).toBe(false);
+          });
+        });
+    });
+    test("GET 200: The array that is returned is sorted by default in descending order by its creation date", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+  });
+});
+
 describe("api path does not exist tests", () => {
   test("returns a 404 status and an error message when given an invalid api path", () => {
     return request(app)
