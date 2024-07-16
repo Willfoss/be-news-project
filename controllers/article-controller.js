@@ -21,6 +21,7 @@ exports.getArticles = (request, response, next) => {
     });
 };
 
+//hmmm been debating if this one should go into the comments controller and have good arguments for either case. any feedback on this welcomed
 exports.getArticleCommentsByArticleId = (request, response, next) => {
   const { article_id } = request.params;
   fetchArticleCommentsByArticleId(article_id)
