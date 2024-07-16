@@ -31,14 +31,13 @@ const fetchArticleCommentsByArticleId = (id) => {
   const queryString = `SELECT * FROM comments 
   WHERE article_id = $1
   ORDER BY created_at ASC`;
+  const promiseArray = [fetchArticleById(id), db.query(queryString, [id])];
 
-  return fetchArticleById(id).then((article) => {
-    if (!article) {
+  return Promise.all(promiseArray).then(([checkArticleExists, query]) => {
+    if (!checkArticleExists) {
       return Promise.reject({ status: 404, message: "not found" });
     }
-    return db.query(queryString, [id]).then(({ rows }) => {
-      return rows;
-    });
+    return query.rows;
   });
 };
 
