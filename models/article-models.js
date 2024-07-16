@@ -1,6 +1,7 @@
+const { getArticleById } = require("../controllers/article-controller");
 const db = require("../db/connection");
 
-exports.fetchArticleById = (id) => {
+const fetchArticleById = (id) => {
   return db
     .query(
       `SELECT articles.* FROM articles
@@ -15,7 +16,7 @@ exports.fetchArticleById = (id) => {
     });
 };
 
-exports.fetchArticles = () => {
+const fetchArticles = () => {
   const queryString = `SELECT articles.article_id, articles.author, articles.title, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id)::int AS comment_count FROM articles 
   LEFT JOIN comments ON comments.article_id=articles.article_id
   GROUP BY articles.article_id
@@ -25,7 +26,8 @@ exports.fetchArticles = () => {
   });
 };
 
-exports.fetchArticleCommentsByArticleId = (id) => {
+//been debating if this one should go into the comments controller and have good arguments for either case. any feedback on this welcomed
+const fetchArticleCommentsByArticleId = (id) => {
   const queryString = `SELECT * FROM comments 
   WHERE article_id = $1
   ORDER BY created_at ASC`;
@@ -36,3 +38,5 @@ exports.fetchArticleCommentsByArticleId = (id) => {
     return rows;
   });
 };
+
+module.exports = { fetchArticleById, fetchArticles, fetchArticleCommentsByArticleId };

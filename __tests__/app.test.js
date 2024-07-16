@@ -168,6 +168,60 @@ describe("/api/articles/:article_id/comments)", () => {
         });
     });
   });
+  describe("POST", () => {
+    test("POST 201: responds to the client with the comment that has been posted", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({ username: "butter_bridge", body: "what do you call a man with a seagull on his head?" })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.comment).toMatchObject({
+            comment_id: 19,
+            article_id: 1,
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: "butter_bridge",
+            body: "what do you call a man with a seagull on his head?",
+          });
+        });
+    });
+    test("POST 400: responds with a bad request error message when the article id is provided as the wrong data type", () => {
+      return request(app)
+        .post("/api/articles/one/comments")
+        .send({ username: "butter_bridge", body: "what do you call a man with a seagull on his head?" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("POST 400: responds with a bad request error message when a required bit of information is missing", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({ body: "what do you call a man with a seagull on his head?" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("POST 404: responds with a not found error message when the user does not exist", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({ username: "Cliff", body: "What do you call a man with a seagull on his head?" })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+    test("POST 404: responds with a not found error message when the article id is the correct data type but does not exist in the db", () => {
+      return request(app)
+        .post("/api/articles/999/comments")
+        .send({ username: "butter_bridge", body: "what do you call a man with a seagull on his head?" })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+  });
 });
 
 describe("api path does not exist tests", () => {
