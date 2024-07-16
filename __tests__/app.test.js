@@ -191,7 +191,6 @@ describe("/api/articles/:article_id/comments)", () => {
         .send({ username: "butter_bridge", body: "what do you call a man with a seagull on his head?", answer: "Cliff" })
         .expect(201)
         .then(({ body }) => {
-          console.log(body);
           expect(body.comment.hasOwnProperty("answer")).toBe(false);
         });
     });
@@ -226,6 +225,71 @@ describe("/api/articles/:article_id/comments)", () => {
       return request(app)
         .post("/api/articles/999/comments")
         .send({ username: "butter_bridge", body: "what do you call a man with a seagull on his head?" })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+  });
+  describe("PATCH", () => {
+    test("PATCH 200: responds with an article object to the client that contains an updated votes value", () => {
+      return request(app)
+        .patch("/api/articles/3")
+        .send({ inc_votes: 1 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.updated_article).toMatchObject({
+            article_id: 3,
+            title: "Eight pug gifs that remind me of mitch",
+            topic: "mitch",
+            author: "icellusedkars",
+            body: "some gifs",
+            votes: 1,
+            created_at: expect.any(String),
+            article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          });
+        });
+    });
+    test("PATCH 200: the returned object ignores any unnecessary properties", () => {
+      return request(app)
+        .patch("/api/articles/3")
+        .send({ inc_votes: 1, apple: "pink lady" })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.updated_article.hasOwnProperty("apple")).toBe(false);
+        });
+    });
+    test("Patch 400: responds with a bad request error message if article id is of the wrong data type", () => {
+      return request(app)
+        .patch("/api/articles/three")
+        .send({ inc_votes: 1 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("Patch 400: responds with a bad request error message if inc_votes property missing from request", () => {
+      return request(app)
+        .patch("/api/articles/3")
+        .send({ apple: "pink lady" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("Patch 400: responds with a bad request error message if inc_votes value is provided as the wrong data type", () => {
+      return request(app)
+        .patch("/api/articles/3")
+        .send({ inc_votes: "one" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("Patch 404: responds with a not found error message if the article id is of the correct data type but does not yet exist in the db", () => {
+      return request(app)
+        .patch("/api/articles/999")
+        .send({ inc_votes: 1 })
         .expect(404)
         .then(({ body }) => {
           expect(body.message).toBe("not found");

@@ -1,4 +1,4 @@
-const { fetchArticleById, fetchArticles, fetchArticleCommentsByArticleId } = require("../models/article-models");
+const { fetchArticleById, fetchArticles, fetchArticleCommentsByArticleId, alterArticleByArticleId } = require("../models/article-models");
 
 exports.getArticleById = (request, response, next) => {
   const { article_id } = request.params;
@@ -27,6 +27,18 @@ exports.getArticleCommentsByArticleId = (request, response, next) => {
   fetchArticleCommentsByArticleId(article_id)
     .then((comments) => {
       return response.send({ comments });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+exports.updateArticleByArticleId = (request, response, next) => {
+  const { article_id } = request.params;
+  const { inc_votes } = request.body;
+  alterArticleByArticleId(article_id, inc_votes)
+    .then((article) => {
+      return response.send({ updated_article: article });
     })
     .catch((error) => {
       next(error);
