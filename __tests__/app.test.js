@@ -113,6 +113,186 @@ describe("/api/articles", () => {
         });
     });
   });
+  describe("GET QUERIES - order", () => {
+    test("order ASC 200: responds with an array of article objects sorted in ascending order when ASC is specified and defaults to created_at if no sort_by provided", () => {
+      return request(app)
+        .get("/api/articles?order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("created_at");
+        });
+    });
+    test("order DESC 200: responds with an array of article objects sorted in ascending order when ASC is specified and defaults to created_at if no sort_by provided", () => {
+      return request(app)
+        .get("/api/articles?order=desc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+    test("order 400: responds with a bad request message when an invalid query is given", () => {
+      return request(app)
+        .get("/api/articles?order=i-am-an-invalid-query")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+  });
+  describe("GET QUERIES - sort_by", () => {
+    test("sort_by article_id 200: responds with an array of article objects sorted by article_id and by default is ordered in descending order", () => {
+      return request(app)
+        .get("/api/articles?sort_by=article_id")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("article_id", { descending: true });
+        });
+    });
+    test("sort_by topic 200: responds with an array of article objects sorted by topics and by default is ordered in descending alphabetical order", () => {
+      return request(app)
+        .get("/api/articles?sort_by=topic")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("topic", { descending: true });
+        });
+    });
+    test("sort_by author 200: responds with an array of article objects sorted by authors and by default is ordered in descending alphabetical order", () => {
+      return request(app)
+        .get("/api/articles?sort_by=author")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("author", { descending: true });
+        });
+    });
+    test("sort_by votes 200: responds with an array of article objects sorted by number of votes and by default is ordered in descending order", () => {
+      return request(app)
+        .get("/api/articles?sort_by=votes")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("votes", { descending: true });
+        });
+    });
+    test("sort_by created_at 200: responds with an array of article objects sorted by creation date and by default is ordered in descending order", () => {
+      return request(app)
+        .get("/api/articles?sort_by=created_at")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+    test("sort_by comment_count 200: responds with an array of article objects sorted by number of comments and by default is ordered in descending order", () => {
+      return request(app)
+        .get("/api/articles?sort_by=comment_count")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("comment_count", { descending: true });
+        });
+    });
+    test("sort_by title 200: responds with an array of article objects sorted in descending title alphabetical order by default", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("title", { descending: true });
+        });
+    });
+    test("sort_by & order 400: responds with a bad request error message when given an invalid sort_by query", () => {
+      return request(app)
+        .get("/api/articles?sort_by=i-am-an-invalid-query")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+  });
+  describe("GET QUERIES - sort_by & order", () => {
+    test("sort_by article_id ASC 200: responds with an array of article objects sorted by article_id and by ascending order when specified", () => {
+      return request(app)
+        .get("/api/articles?sort_by=article_id&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("article_id");
+        });
+    });
+
+    test("sort_by & order topic ASC 200: responds with an array of article objects sorted by topics and by ascending alphbetical order when specified", () => {
+      return request(app)
+        .get("/api/articles?sort_by=topic&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("topic");
+        });
+    });
+
+    test("sort_by & order author ASC 200: responds with an array of article objects sorted by authors and by ascending alphbetical order when specified", () => {
+      return request(app)
+        .get("/api/articles?sort_by=author&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("author");
+        });
+    });
+
+    test("sort_by & order votes ASC 200: responds with an array of article objects sorted by number of votes and by ascending  order when specified", () => {
+      return request(app)
+        .get("/api/articles?sort_by=votes&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("votes");
+        });
+    });
+
+    test("sort_by & order created_at ASC 200: responds with an array of article objects sorted by creation date by ascending  order when specified", () => {
+      return request(app)
+        .get("/api/articles?sort_by=created_at&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("created_at");
+        });
+    });
+
+    test("sort_by & order comment_count ASC 200: responds with an array of article objects sorted by number of comments by ascending  order when specified", () => {
+      return request(app)
+        .get("/api/articles?sort_by=comment_count&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("comment_count");
+        });
+    });
+
+    test("sort_by & order title ASC 200: responds with an array of article objects sorted alphabetically by title when asc specified", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("title");
+        });
+    });
+    test("sort_by & order 400: responds with a bad request error message when given an invalid order or sort by query", () => {
+      return request(app)
+        .get("/api/articles?sort_by=i-am-an-invalid-query&order=asc")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+  });
 });
 
 describe("/api/articles/:article_id/comments)", () => {
