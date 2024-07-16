@@ -1,4 +1,3 @@
-const { getArticleById } = require("../controllers/article-controller");
 const db = require("../db/connection");
 
 const fetchArticleById = (id) => {
@@ -16,21 +15,27 @@ const fetchArticleById = (id) => {
     });
 };
 
-const fetchArticles = (sort_by = "created_at", order = "desc") => {
+const fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
   const validSortBys = ["article_id", "topic", "author", "votes", "created_at", "comment_count", "title"];
   const validOrders = ["asc", "desc", "ASC", "DESC"];
+  const topicArray = [];
 
   let queryString = `SELECT articles.article_id, articles.author, articles.title, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id)::int AS comment_count FROM articles 
-    LEFT JOIN comments ON comments.article_id=articles.article_id
-    GROUP BY articles.article_id`;
+    LEFT JOIN comments ON comments.article_id=articles.article_id`;
 
   if (!validSortBys.includes(sort_by) || !validOrders.includes(order)) {
     return Promise.reject({ status: 400, message: "bad request" });
   }
 
+  if (topic) {
+    queryString += ` WHERE topic = $1`;
+    topicArray.push(topic);
+  }
+
+  queryString += ` GROUP BY articles.article_id`;
   queryString += ` ORDER BY ${sort_by} ${order}`;
 
-  return db.query(queryString).then(({ rows }) => {
+  return db.query(queryString, topicArray).then(({ rows }) => {
     return rows;
   });
 };

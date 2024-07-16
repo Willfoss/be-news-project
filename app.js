@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const { getTopics } = require("./controllers/topic-controllers.js");
+const { getTopics, getTopic } = require("./controllers/topic-controllers.js");
 const { getApiList } = require("./controllers/api-controllers.js");
 const { getArticleById, getArticles, getArticleCommentsByArticleId, updateArticleByArticleId } = require("./controllers/article-controller.js");
 const { addComment, deleteComment } = require("./controllers/comment-controllers.js");
@@ -10,6 +10,8 @@ const { serverErrorHandler, customErrorHandler, psqlErrorHandler } = require("./
 app.use(express.json());
 
 app.get("/api/topics", getTopics);
+
+app.get("/api/topics/:topic", getTopic);
 
 app.get("/api", getApiList);
 
