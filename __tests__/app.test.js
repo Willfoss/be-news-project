@@ -185,6 +185,16 @@ describe("/api/articles/:article_id/comments)", () => {
           });
         });
     });
+    test("POST 201: it ignores any additional information included in the send request", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({ username: "butter_bridge", body: "what do you call a man with a seagull on his head?", answer: "Cliff" })
+        .expect(201)
+        .then(({ body }) => {
+          console.log(body);
+          expect(body.comment.hasOwnProperty("answer")).toBe(false);
+        });
+    });
     test("POST 400: responds with a bad request error message when the article id is provided as the wrong data type", () => {
       return request(app)
         .post("/api/articles/one/comments")

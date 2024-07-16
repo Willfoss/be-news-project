@@ -8,7 +8,6 @@ exports.addComment = (request, response, next) => {
       return response.status(201).send({ comment });
     })
     .catch((error) => {
-      console.log(error);
       next(error);
     });
 };
