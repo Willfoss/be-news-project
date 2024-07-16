@@ -3,7 +3,7 @@ const app = express();
 const { getTopics } = require("./controllers/topic-controllers.js");
 const { getApiList } = require("./controllers/api-controllers.js");
 const { getArticleById, getArticles, getArticleCommentsByArticleId, updateArticleByArticleId } = require("./controllers/article-controller.js");
-const { addComment, deleteComment } = require("./controllers/comment.controllers.js");
+const { addComment, deleteComment } = require("./controllers/comment-controllers.js");
 const { serverErrorHandler, customErrorHandler, psqlErrorHandler } = require("./error-handling.js");
 
 app.use(express.json());
