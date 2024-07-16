@@ -143,6 +143,14 @@ describe("/api/articles/:article_id/comments)", () => {
           expect(body.comments).toBeSortedBy("created_at");
         });
     });
+    test("GET 200: responds with an empty array when the article id provided exists and is the correct data type but the article has no comments ", () => {
+      return request(app)
+        .get("/api/articles/8/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).toEqual([]);
+        });
+    });
     test("GET 400: responds with a bad request error message when the article id is provided as the wrong data type", () => {
       return request(app)
         .get("/api/articles/one/comments")
@@ -154,14 +162,6 @@ describe("/api/articles/:article_id/comments)", () => {
     test("GET 404: responds with a not found error message when the article id is provided as the correct data type but is out of range of the db", () => {
       return request(app)
         .get("/api/articles/99999/comments")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.message).toBe("not found");
-        });
-    });
-    test("GET 404: responds with a not found error message when the article id provided exists and is the correct data type but the article has no comments ", () => {
-      return request(app)
-        .get("/api/articles/8/comments")
         .expect(404)
         .then(({ body }) => {
           expect(body.message).toBe("not found");
