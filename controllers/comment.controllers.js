@@ -1,6 +1,6 @@
-const { insertComment } = require("../models/comment-models");
+const { insertComment, removeComment } = require("../models/comment-models");
 
-exports.addComment = (request, response, next) => {
+const addComment = (request, response, next) => {
   const { body } = request;
   const { article_id } = request.params;
   insertComment(body, article_id)
@@ -11,3 +11,16 @@ exports.addComment = (request, response, next) => {
       next(error);
     });
 };
+
+const deleteComment = (request, response, next) => {
+  const { comment_id } = request.params;
+  removeComment(comment_id)
+    .then(() => {
+      return response.send(204);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+module.exports = { addComment, deleteComment };

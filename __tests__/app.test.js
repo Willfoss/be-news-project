@@ -298,6 +298,20 @@ describe("/api/articles/:article_id/comments)", () => {
   });
 });
 
+describe("/api/comments/:comment_id tests", () => {
+  describe("DELETE", () => {
+    test("DELETE 204: responds with a 204 status after successful deletion", () => {
+      return request(app).delete("/api/comments/2").expect(204);
+    });
+    test("DELETE 400: responds with bad request error message if passed an invalid comment_id data type", () => {
+      return request(app).delete("/api/comments/two").expect(400);
+    });
+    test("DELETE 404: responds with not found error message if passed a comment id of the correct data type but does not yet exist in the db", () => {
+      return request(app).delete("/api/comments/99").expect(404);
+    });
+  });
+});
+
 describe("api path does not exist tests", () => {
   test("returns a 404 status and an error message when given an invalid api path", () => {
     return request(app)
