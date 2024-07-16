@@ -46,7 +46,7 @@ const alterArticleByArticleId = (id, votes) => {
     return Promise.reject({ status: 400, message: "bad request" });
   }
   const queryString = `UPDATE articles
-  SET votes = $1
+  SET votes = votes + $1
   WHERE article_id = $2
   RETURNING *`;
   return db.query(queryString, [votes, id]).then(({ rows }) => {

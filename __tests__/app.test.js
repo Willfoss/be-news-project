@@ -232,7 +232,7 @@ describe("/api/articles/:article_id/comments)", () => {
     });
   });
   describe("PATCH", () => {
-    test("PATCH 200: responds with an article object to the client that contains an updated votes value", () => {
+    test("PATCH 200: responds with an article object to the client that contains an updated incremental votes value when the vote is positive", () => {
       return request(app)
         .patch("/api/articles/3")
         .send({ inc_votes: 1 })
@@ -246,6 +246,24 @@ describe("/api/articles/:article_id/comments)", () => {
             body: "some gifs",
             votes: 1,
             created_at: expect.any(String),
+            article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          });
+        });
+    });
+    test("PATCH 200: responds with an article object to the client that contains an updated decremental votes value when the vote is negative", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: -1 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.updated_article).toMatchObject({
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: expect.any(String),
+            votes: 99,
             article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
           });
         });
