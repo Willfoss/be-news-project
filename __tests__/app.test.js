@@ -330,6 +330,26 @@ describe("/api/comments/:comment_id tests", () => {
   });
 });
 
+describe("/api/users testing", () => {
+  describe("GET", () => {
+    test("GET 200: responds with an array of user objects contains properties about the user", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.users.length).toBe(4);
+          body.users.forEach((user) => {
+            expect(user).toMatchObject({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            });
+          });
+        });
+    });
+  });
+});
+
 describe("api path does not exist tests", () => {
   test("returns a 404 status and an error message when given an invalid api path", () => {
     return request(app)
