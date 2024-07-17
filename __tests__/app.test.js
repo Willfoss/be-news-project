@@ -624,6 +624,31 @@ describe("/api/users testing", () => {
   });
 });
 
+describe.only("/api/users/:username testing", () => {
+  describe("GET", () => {
+    test("GET 200: responds with a user object containing properties about the user", () => {
+      return request(app)
+        .get("/api/users/rogersop")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.user).toMatchObject({
+            username: "rogersop",
+            name: "paul",
+            avatar_url: "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+          });
+        });
+    });
+    test("GET 404: responds with a not found message if user is not in the db", () => {
+      return request(app)
+        .get("/api/users/willfoss")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+  });
+});
+
 describe("api path does not exist tests", () => {
   test("returns a 404 status and an error message when given an invalid api path", () => {
     return request(app)
