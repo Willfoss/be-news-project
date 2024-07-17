@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { articleData } = require("../db/data/test-data");
 
 const fetchArticleById = (id) => {
   return db
@@ -87,4 +88,49 @@ const alterArticleByArticleId = (id, votes) => {
   });
 };
 
-module.exports = { fetchArticleById, fetchArticles, fetchArticleCommentsByArticleId, alterArticleByArticleId, insertCommentByArticleId };
+const insertArticle = (
+  author,
+  title,
+  body,
+  topic,
+  article_img_url = "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700"
+) => {
+  if (!author || !title || !body || !topic) {
+    return Promise.reject({ status: 400, message: "bad request" });
+  }
+
+  const queryString1 = `INSERT INTO articles (author, title, body, topic, article_img_url)
+  VALUES ($1, $2, $3, $4, $5) RETURNING *`;
+
+  const queryString2 = `SELECT articles.*, COUNT(comments.comment_id)::int AS comment_count FROM articles 
+  LEFT JOIN comments ON comments.article_id=articles.article_id
+  WHERE (articles.author = $1
+  AND articles.title = $2
+  AND articles.body = $3
+  AND articles.topic = $4
+  AND articles.article_img_url= $5)
+  GROUP BY articles.article_id`;
+
+  // return Promise.all([
+  //   db.query(queryString1, [author, title, body, topic, article_img_url]),
+  //   db.query(queryString2, [author, title, body, topic, article_img_url]),
+  // ]).then(([insertQuery, retrieveDataQuery]) => {
+  //   console.log(insertQuery.rows, retrieveDataQuery.rows);
+  //WHY DOES THIS SOMETIMES WORK AND SOMETIMES NOT!?!?!?!
+  // });
+
+  return db.query(queryString1, [author, title, body, topic, article_img_url]).then(() => {
+    return db.query(queryString2, [author, title, body, topic, article_img_url]).then(({ rows }) => {
+      return rows[0];
+    });
+  });
+};
+
+module.exports = {
+  fetchArticleById,
+  fetchArticles,
+  fetchArticleCommentsByArticleId,
+  alterArticleByArticleId,
+  insertCommentByArticleId,
+  insertArticle,
+};

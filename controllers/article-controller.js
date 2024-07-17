@@ -4,6 +4,7 @@ const {
   fetchArticleCommentsByArticleId,
   alterArticleByArticleId,
   insertCommentByArticleId,
+  insertArticle,
 } = require("../models/article-models");
 const { fetchTopicByTopic } = require("../models/topic-models");
 
@@ -78,4 +79,22 @@ const updateArticleByArticleId = (request, response, next) => {
     });
 };
 
-module.exports = { getArticleById, addCommentByArticleId, updateArticleByArticleId, getArticleCommentsByArticleId, getArticles };
+const addArticle = (request, response, next) => {
+  const { author, title, body, topic, article_img_url } = request.body;
+  insertArticle(author, title, body, topic, article_img_url)
+    .then((article) => {
+      return response.send({ article });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+module.exports = {
+  getArticleById,
+  addCommentByArticleId,
+  updateArticleByArticleId,
+  getArticleCommentsByArticleId,
+  getArticles,
+  addArticle,
+};
