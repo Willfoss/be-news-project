@@ -88,43 +88,45 @@ const alterArticleByArticleId = (id, votes) => {
   });
 };
 
-const insertArticle = (
-  author,
-  title,
-  body,
-  topic,
-  article_img_url = "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700"
-) => {
-  if (!author || !title || !body || !topic || !article_img_url) {
+const insertArticle = (author, title, body, topic, article_img_url) => {
+  if (!author || !title || !body || !topic) {
     return Promise.reject({ status: 400, message: "bad request" });
   }
 
-  const queryString1 = `INSERT INTO articles (author, title, body, topic, article_img_url)
-  VALUES ($1, $2, $3, $4, $5) RETURNING *`;
+  const insertArray = [author, title, body, topic];
 
-  const queryString2 = `SELECT articles.*, COUNT(comments.comment_id)::int AS comment_count FROM articles 
+  let queryString1 = `INSERT INTO articles (author, title, body, topic`;
+
+  let queryString2 = `SELECT articles.*, COUNT(comments.comment_id)::int AS comment_count FROM articles 
   LEFT JOIN comments ON comments.article_id=articles.article_id
   WHERE (articles.author = $1
   AND articles.title = $2
   AND articles.body = $3
-  AND articles.topic = $4
-  AND articles.article_img_url= $5)
-  GROUP BY articles.article_id`;
+  AND articles.topic = $4`;
+
+  if (article_img_url) {
+    queryString1 += `, article_img_url) VALUES ($1, $2, $3, $4, $5) RETURNING *;`;
+    queryString2 += ` AND articles.article_img_url= $5) GROUP BY articles.article_id`;
+    insertArray.push(article_img_url);
+  } else {
+    queryString1 += `) VALUES ($1, $2, $3, $4) RETURNING *;`;
+    queryString2 += `) GROUP BY articles.article_id`;
+  }
+
+  console.log(queryString1);
+  console.log(queryString2);
 
   //WHY DOES THIS SOMETIMES WORK AND SOMETIMES NOT!?!?!?!
-  // return Promise.all([
-  //   db.query(queryString1, [author, title, body, topic, article_img_url]),
-  //   db.query(queryString2, [author, title, body, topic, article_img_url]),
-  // ]).then(([insertQuery, retrieveDataQuery]) => {
+  // return Promise.all([db.query(queryString1, insertArray), db.query(queryString2, insertArray)]).then(([insertQuery, retrieveDataQuery]) => {
   //   console.log(insertQuery.rows, retrieveDataQuery.rows);
   //   return retrieveDataQuery.rows[0];
   // });
 
-  return db.query(queryString1, [author, title, body, topic, article_img_url]).then(() => {
-    return db.query(queryString2, [author, title, body, topic, article_img_url]).then(({ rows }) => {
-      return rows[0];
-    });
-  });
+  // return db.query(queryString1, insertArray).then(() => {
+  //   return db.query(queryString2, insertArray).then(({ rows }) => {
+  //     return rows[0];
+  //   });
+  // });
 };
 
 module.exports = {
