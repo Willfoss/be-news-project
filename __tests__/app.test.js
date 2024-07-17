@@ -413,7 +413,7 @@ describe("/api/articles", () => {
           });
         });
     });
-    test("POST 201: when an article object is request with no image url it responds with the default img url", () => {
+    test("POST 201: when an article object is requested with no image url it responds with the default img url", () => {
       return request(app)
         .post("/api/articles")
         .send({
