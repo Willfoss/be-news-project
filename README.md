@@ -20,8 +20,7 @@ clone the repo using the following links:
 
 Next, install the various npm packages to run the project:
 
-1.          npm install
-2.          npm i -D pg
+    npm install
 
 ---
 
@@ -31,7 +30,7 @@ in order to connect to either the development or test database it's required to 
 
 a .env.development file with the contents:
 
-     PGDATABASE=nc_news
+    PGDATABASE=nc_news
 
 a .env.test file with the contents:
 
@@ -48,20 +47,6 @@ then run the seed file
 ---
 
 ## Testing
-
-to run the test files the following are required:
-
-Jest:
-
-    npm i -D jest
-
-supertest:
-
-    npm i -D supertest
-
-jest-sorted
-
-    npm i -D sorted-by
 
 to run the test file, run the following command
 

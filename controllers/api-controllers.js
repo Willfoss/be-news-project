@@ -1,5 +1,7 @@
 const endpoints = require("../endpoints.json");
 
-exports.getApiList = (request, response, next) => {
+const getApiList = (request, response, next) => {
   return response.send({ endpoints });
 };
+
+module.exports = { getApiList };

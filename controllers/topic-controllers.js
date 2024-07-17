@@ -1,6 +1,6 @@
-const { fetchTopics, fetchTopic } = require("../models/topic-models");
+const { fetchTopics, fetchTopicByTopic } = require("../models/topic-models");
 
-exports.getTopics = (request, response, next) => {
+const getTopics = (request, response, next) => {
   fetchTopics()
     .then((topics) => {
       return response.send({ topics });
@@ -10,9 +10,9 @@ exports.getTopics = (request, response, next) => {
     });
 };
 
-exports.getTopic = (request, response, next) => {
+const getTopicByTopic = (request, response, next) => {
   const { topic } = request.params;
-  fetchTopic(topic)
+  fetchTopicByTopic(topic)
     .then((topic) => {
       return response.send({ topic });
     })
@@ -20,3 +20,5 @@ exports.getTopic = (request, response, next) => {
       next(error);
     });
 };
+
+module.exports = { getTopics, getTopicByTopic };
