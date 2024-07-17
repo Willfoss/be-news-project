@@ -29,6 +29,30 @@ describe("/api/topics testing", () => {
   });
 });
 
+describe("/api/topics/:topic", () => {
+  describe("GET", () => {
+    test("Get 200: returns a topic object that's associated with the provided topci", () => {
+      return request(app)
+        .get("/api/topics/mitch")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.topic).toMatchObject({
+            slug: "mitch",
+            description: "The man, the Mitch, the legend",
+          });
+        });
+    });
+    test("GET 404: reponds with a not found message if sending an endpoint with the wrong data type", () => {
+      return request(app)
+        .get("/api/topics/i-do-not-exist")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+  });
+});
+
 describe("/api", () => {
   describe("GET", () => {
     test("GET 200: returns an object containing all available endpoints of the API", () => {
@@ -290,6 +314,76 @@ describe("/api/articles", () => {
         .expect(400)
         .then(({ body }) => {
           expect(body.message).toBe("bad request");
+        });
+    });
+  });
+  describe("GET QUERIES - topic", () => {
+    test("topic query 200: responds with an array of articles matching the topic query passed in", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(12);
+          body.articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: "mitch",
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+          });
+        });
+    });
+    test("topic query 200: responds with an empty array if searching for a topic that does exist but has no articles associated with it", () => {
+      return request(app)
+        .get("/api/articles?topic=paper")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toEqual([]);
+        });
+    });
+    test("topic query 200: articles are ordered in descending order by created at by default", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+    test("topic query 200: articles are ordered in ascending order by created at when order specified", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("created_at");
+        });
+    });
+    test("topic query 200: aticles are ordered in descending order when picking a sort by and not specifiyng an order", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch&sort_by=comment_count")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("comment_count", { descending: true });
+        });
+    });
+    test("topic query 200: aticles are ordered in ascending order when picking a sort by and not specifiyng an order", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch&sort_by=comment_count&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("comment_count");
+        });
+    });
+    test("topic query 404: responds with a not found message if no articles are found and the topic does not exist", () => {
+      return request(app)
+        .get("/api/articles?topic=dinnertime")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
         });
     });
   });
