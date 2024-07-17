@@ -1,9 +1,6 @@
 const express = require("express");
 const app = express();
 const apiRouter = require("./routes/api-router.js");
-//const { getTopics, getTopicByTopic } = require("./controllers/topic-controllers.js");
-const { getApiList } = require("./controllers/api-controllers.js");
-
 const { serverErrorHandler, customErrorHandler, psqlErrorHandler } = require("./error-handling.js");
 
 app.use(express.json());
