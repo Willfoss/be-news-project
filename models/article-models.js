@@ -95,7 +95,7 @@ const insertArticle = (
   topic,
   article_img_url = "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700"
 ) => {
-  if (!author || !title || !body || !topic) {
+  if (!author || !title || !body || !topic || !article_img_url) {
     return Promise.reject({ status: 400, message: "bad request" });
   }
 
@@ -111,12 +111,13 @@ const insertArticle = (
   AND articles.article_img_url= $5)
   GROUP BY articles.article_id`;
 
+  //WHY DOES THIS SOMETIMES WORK AND SOMETIMES NOT!?!?!?!
   // return Promise.all([
   //   db.query(queryString1, [author, title, body, topic, article_img_url]),
   //   db.query(queryString2, [author, title, body, topic, article_img_url]),
   // ]).then(([insertQuery, retrieveDataQuery]) => {
   //   console.log(insertQuery.rows, retrieveDataQuery.rows);
-  //WHY DOES THIS SOMETIMES WORK AND SOMETIMES NOT!?!?!?!
+  //   return retrieveDataQuery.rows[0];
   // });
 
   return db.query(queryString1, [author, title, body, topic, article_img_url]).then(() => {

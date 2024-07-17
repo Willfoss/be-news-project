@@ -388,7 +388,7 @@ describe("/api/articles", () => {
     });
   });
   describe.only("POST", () => {
-    test("POST 201: responds with the article object that has been sent in the request", () => {
+    test("POST 201: responds with the article object that has been sent in the request with the addition of comment_count", () => {
       return request(app)
         .post("/api/articles")
         .send({
@@ -445,7 +445,7 @@ describe("/api/articles", () => {
           title: "florida man charged with assault after throwing alligator into a wendy's",
           body: "no seriously thats an actual real headline",
           topic: "paper",
-          name: "will",
+          article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
         })
         .expect(201)
         .then(({ body }) => {
@@ -457,10 +457,37 @@ describe("/api/articles", () => {
             body: "no seriously thats an actual real headline",
             votes: expect.any(Number),
             created_at: expect.any(String),
-            article_img_url: "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700",
+            article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
             comment_count: expect.any(Number),
           });
           expect(body.article.hasOwnProperty("will")).toBe(false);
+        });
+    });
+    test("POST 400: responds with a bad request message when trying to send a request without information that is required", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          author: "butter_bridge",
+          title: "florida man charged with assault after throwing alligator into a wendy's",
+          body: "no seriously thats an actual real headline",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("POST 404: responds with a not found message when trying to send a request with a topic that does not exist", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          author: "butter_bridge",
+          topic: "bob",
+          title: "florida man charged with assault after throwing alligator into a wendy's",
+          body: "no seriously thats an actual real headline",
+        })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
         });
     });
   });
