@@ -370,7 +370,7 @@ describe("/api/articles", () => {
           expect(body.articles).toBeSortedBy("comment_count", { descending: true });
         });
     });
-    test("topic query 200: aticles are ordered in ascending order when picking a sort by and not specifiyng an order", () => {
+    test("topic query 200: aticles are ordered in ascending order when picking a sort by and specifiyng an order", () => {
       return request(app)
         .get("/api/articles?topic=mitch&sort_by=comment_count&order=asc")
         .expect(200)
