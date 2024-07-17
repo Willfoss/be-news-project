@@ -388,7 +388,7 @@ describe("/api/articles", () => {
     });
   });
   describe.only("POST", () => {
-    test("POST 200: responds with the article object that has been sent in the request", () => {
+    test("POST 201: responds with the article object that has been sent in the request", () => {
       return request(app)
         .post("/api/articles")
         .send({
@@ -398,7 +398,7 @@ describe("/api/articles", () => {
           topic: "paper",
           article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
         })
-        .expect(200)
+        .expect(201)
         .then(({ body }) => {
           expect(body.article).toMatchObject({
             article_id: 14,
@@ -413,7 +413,7 @@ describe("/api/articles", () => {
           });
         });
     });
-    test("POST 200: when an article object is request with no image url it responds with the default img url", () => {
+    test("POST 201: when an article object is request with no image url it responds with the default img url", () => {
       return request(app)
         .post("/api/articles")
         .send({
@@ -422,7 +422,7 @@ describe("/api/articles", () => {
           body: "no seriously thats an actual real headline",
           topic: "paper",
         })
-        .expect(200)
+        .expect(201)
         .then(({ body }) => {
           expect(body.article).toMatchObject({
             article_id: 14,
@@ -437,7 +437,7 @@ describe("/api/articles", () => {
           });
         });
     });
-    test("POST 200: the response ignores extra information sent in the request which is not required", () => {
+    test("POST 201: the response ignores extra information sent in the request which is not required", () => {
       return request(app)
         .post("/api/articles")
         .send({
@@ -447,7 +447,7 @@ describe("/api/articles", () => {
           topic: "paper",
           name: "will",
         })
-        .expect(200)
+        .expect(201)
         .then(({ body }) => {
           expect(body.article).toMatchObject({
             article_id: 14,

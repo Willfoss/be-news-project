@@ -83,7 +83,7 @@ const addArticle = (request, response, next) => {
   const { author, title, body, topic, article_img_url } = request.body;
   insertArticle(author, title, body, topic, article_img_url)
     .then((article) => {
-      return response.send({ article });
+      return response.status(201).send({ article });
     })
     .catch((error) => {
       next(error);
