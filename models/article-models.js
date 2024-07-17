@@ -113,20 +113,17 @@ const insertArticle = (author, title, body, topic, article_img_url) => {
     queryString2 += `) GROUP BY articles.article_id`;
   }
 
-  console.log(queryString1);
-  console.log(queryString2);
-
   //WHY DOES THIS SOMETIMES WORK AND SOMETIMES NOT!?!?!?!
   // return Promise.all([db.query(queryString1, insertArray), db.query(queryString2, insertArray)]).then(([insertQuery, retrieveDataQuery]) => {
   //   console.log(insertQuery.rows, retrieveDataQuery.rows);
   //   return retrieveDataQuery.rows[0];
   // });
 
-  // return db.query(queryString1, insertArray).then(() => {
-  //   return db.query(queryString2, insertArray).then(({ rows }) => {
-  //     return rows[0];
-  //   });
-  // });
+  return db.query(queryString1, insertArray).then(() => {
+    return db.query(queryString2, insertArray).then(({ rows }) => {
+      return rows[0];
+    });
+  });
 };
 
 module.exports = {
