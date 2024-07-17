@@ -9,4 +9,18 @@ const removeComment = (id) => {
   });
 };
 
-module.exports = { removeComment };
+const alterComment = (id, votes) => {
+  const queryString = `UPDATE comments
+  SET votes = votes + $1
+  WHERE comment_id = $2
+  RETURNING *`;
+
+  return db.query(queryString, [votes, id]).then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({ status: 404, message: "not found" });
+    }
+    return rows[0];
+  });
+};
+
+module.exports = { removeComment, alterComment };

@@ -602,6 +602,99 @@ describe("/api/comments/:comment_id tests", () => {
       return request(app).delete("/api/comments/99").expect(404);
     });
   });
+  describe("PATCH", () => {
+    test("PATCH 200: responds with the updated comment object including the the incremented new votes if a positive vote value given", () => {
+      return request(app)
+        .patch("/api/comments/2")
+        .send({ inc_votes: 1 })
+        .then(({ body }) => {
+          expect(body.updatedComment).toMatchObject({
+            comment_id: 2,
+            article_id: 1,
+            votes: 15,
+            created_at: expect.any(String),
+            author: "butter_bridge",
+            body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+          });
+        });
+    });
+    test("PATCH 200: responds with the updated comment object including the the descremented new votes if a negative vote value given", () => {
+      return request(app)
+        .patch("/api/comments/2")
+        .send({ inc_votes: -1 })
+        .then(({ body }) => {
+          expect(body.updatedComment).toMatchObject({
+            comment_id: 2,
+            article_id: 1,
+            votes: 13,
+            created_at: expect.any(String),
+            author: "butter_bridge",
+            body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+          });
+        });
+    });
+    test("PATCH 200: ignores unnecessary properties added to the request and responds with the updated object", () => {
+      return request(app)
+        .patch("/api/comments/2")
+        .send({ inc_votes: 1, name: "will" })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.updatedComment).toMatchObject({
+            comment_id: 2,
+            article_id: 1,
+            votes: 15,
+            created_at: expect.any(String),
+            author: "butter_bridge",
+            body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+          });
+        });
+    });
+    test("PATCH 400: responds with bad request when send a request with an invalid data type for a value", () => {
+      return request(app)
+        .patch("/api/comments/2")
+        .send({ inc_votes: "one" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("PATCH 400: responds with a bad request if send an empty object request", () => {
+      return request(app)
+        .patch("/api/comments/2")
+        .send({})
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("PATCH 400: responds with a bad request if comment id is an invalid data type", () => {
+      return request(app)
+        .patch("/api/comments/two")
+        .send({})
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("PATCH 400: responds with a bad request if inc_votes is not included in the sent body", () => {
+      return request(app)
+        .patch("/api/comments/two")
+        .send({ name: "will" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("PATCH 404: responds with a not found if the comment id is the correct data type but the comment id does not yet exist in the db", () => {
+      return request(app)
+        .patch("/api/comments/999")
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+  });
 });
 
 describe("/api/users testing", () => {
@@ -624,7 +717,7 @@ describe("/api/users testing", () => {
   });
 });
 
-describe.only("/api/users/:username testing", () => {
+describe("/api/users/:username testing", () => {
   describe("GET", () => {
     test("GET 200: responds with a user object containing properties about the user", () => {
       return request(app)
