@@ -68,12 +68,11 @@ describe("/api", () => {
 
 describe("/api/articles/:article_id", () => {
   describe("GET", () => {
-    test("GET 200: responds with an object with details of the article to the client", () => {
+    test("GET 200: responds with an object with details of the article to the client including comment count", () => {
       return request(app)
         .get("/api/articles/3")
         .expect(200)
         .then(({ body }) => {
-          //tried to do this as an exact equal but had a nightmare with converting time. i would argue this is still a sufficient test
           expect(body.article).toMatchObject({
             article_id: 3,
             title: "Eight pug gifs that remind me of mitch",
@@ -83,6 +82,7 @@ describe("/api/articles/:article_id", () => {
             votes: expect.any(Number),
             created_at: expect.any(String),
             article_img_url: expect.any(String),
+            comment_count: 2,
           });
         });
     });
