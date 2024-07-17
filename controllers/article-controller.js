@@ -1,7 +1,13 @@
-const { fetchArticleById, fetchArticles, fetchArticleCommentsByArticleId, alterArticleByArticleId } = require("../models/article-models");
-const { fetchTopic } = require("../models/topic-models");
+const {
+  fetchArticleById,
+  fetchArticles,
+  fetchArticleCommentsByArticleId,
+  alterArticleByArticleId,
+  insertCommentByArticleId,
+} = require("../models/article-models");
+const { fetchTopicByTopic } = require("../models/topic-models");
 
-exports.getArticleById = (request, response, next) => {
+const getArticleById = (request, response, next) => {
   const { article_id } = request.params;
   fetchArticleById(article_id)
     .then((article) => {
@@ -12,10 +18,10 @@ exports.getArticleById = (request, response, next) => {
     });
 };
 
-exports.getArticles = (request, response, next) => {
+const getArticles = (request, response, next) => {
   const { sort_by, order, topic } = request.query;
   if (topic) {
-    Promise.all([fetchTopic(topic), fetchArticles(sort_by, order, topic)])
+    Promise.all([fetchTopicByTopic(topic), fetchArticles(sort_by, order, topic)])
       .then(([doesTopicExists, articles]) => {
         if (!doesTopicExists) {
           return response.status(404).send({ message: "not found" });
@@ -37,7 +43,7 @@ exports.getArticles = (request, response, next) => {
 };
 
 //hmmm been debating if this one should go into the comments controller and have good arguments for either case. any feedback on this welcomed
-exports.getArticleCommentsByArticleId = (request, response, next) => {
+const getArticleCommentsByArticleId = (request, response, next) => {
   const { article_id } = request.params;
   fetchArticleCommentsByArticleId(article_id)
     .then((comments) => {
@@ -48,7 +54,19 @@ exports.getArticleCommentsByArticleId = (request, response, next) => {
     });
 };
 
-exports.updateArticleByArticleId = (request, response, next) => {
+const addCommentByArticleId = (request, response, next) => {
+  const { body } = request;
+  const { article_id } = request.params;
+  insertCommentByArticleId(body, article_id)
+    .then((comment) => {
+      return response.status(201).send({ comment });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+const updateArticleByArticleId = (request, response, next) => {
   const { article_id } = request.params;
   const { inc_votes } = request.body;
   alterArticleByArticleId(article_id, inc_votes)
@@ -59,3 +77,5 @@ exports.updateArticleByArticleId = (request, response, next) => {
       next(error);
     });
 };
+
+module.exports = { getArticleById, addCommentByArticleId, updateArticleByArticleId, getArticleCommentsByArticleId, getArticles };
