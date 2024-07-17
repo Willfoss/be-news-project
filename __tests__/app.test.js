@@ -481,9 +481,25 @@ describe("/api/articles", () => {
         .post("/api/articles")
         .send({
           author: "butter_bridge",
-          topic: "bob",
+          topic: "breaking-news",
           title: "florida man charged with assault after throwing alligator into a wendy's",
           body: "no seriously thats an actual real headline",
+          article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+    test("POST 404: responds with a not found message when trying to send a request with an author that does not exist", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          author: "will",
+          topic: "paper",
+          title: "florida man charged with assault after throwing alligator into a wendy's",
+          body: "no seriously thats an actual real headline",
+          article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
         })
         .expect(404)
         .then(({ body }) => {
