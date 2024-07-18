@@ -86,7 +86,6 @@ const addArticle = (request, response, next) => {
       return response.status(201).send({ article });
     })
     .catch((error) => {
-      console.log(error);
       next(error);
     });
 };
