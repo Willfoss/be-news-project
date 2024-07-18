@@ -387,6 +387,126 @@ describe("/api/articles", () => {
         });
     });
   });
+  describe("POST", () => {
+    test("POST 201: responds with the complete article object that has been sent in the request with the addition of comment_count property", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          author: "butter_bridge",
+          title: "florida man charged with assault after throwing alligator into a wendy's",
+          body: "no seriously thats an actual real headline",
+          topic: "paper",
+          article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.article).toMatchObject({
+            article_id: 14,
+            title: "florida man charged with assault after throwing alligator into a wendy's",
+            topic: "paper",
+            author: "butter_bridge",
+            body: "no seriously thats an actual real headline",
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            comment_count: expect.any(Number),
+          });
+        });
+    });
+    test("POST 201: when an article object is requested with no image url it responds with the default img url", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          author: "butter_bridge",
+          title: "florida man charged with assault after throwing alligator into a wendy's",
+          body: "no seriously thats an actual real headline",
+          topic: "paper",
+        })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.article).toMatchObject({
+            article_id: 14,
+            title: "florida man charged with assault after throwing alligator into a wendy's",
+            topic: "paper",
+            author: "butter_bridge",
+            body: "no seriously thats an actual real headline",
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            article_img_url: "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700",
+            comment_count: expect.any(Number),
+          });
+        });
+    });
+    test("POST 201: the response ignores extra information sent in the request which is not required", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          author: "butter_bridge",
+          title: "florida man charged with assault after throwing alligator into a wendy's",
+          body: "no seriously thats an actual real headline",
+          topic: "paper",
+          article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.article).toMatchObject({
+            article_id: 14,
+            title: "florida man charged with assault after throwing alligator into a wendy's",
+            topic: "paper",
+            author: "butter_bridge",
+            body: "no seriously thats an actual real headline",
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            comment_count: expect.any(Number),
+          });
+          expect(body.article.hasOwnProperty("will")).toBe(false);
+        });
+    });
+    test("POST 400: responds with a bad request message when trying to send a request without information that is required", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          author: "butter_bridge",
+          title: "florida man charged with assault after throwing alligator into a wendy's",
+          body: "no seriously thats an actual real headline",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("POST 404: responds with a not found message when trying to send a request with a topic that does not exist", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          author: "butter_bridge",
+          topic: "breaking-news",
+          title: "florida man charged with assault after throwing alligator into a wendy's",
+          body: "no seriously thats an actual real headline",
+          article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+    test("POST 404: responds with a not found message when trying to send a request with an author that does not exist", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          author: "will",
+          topic: "paper",
+          title: "florida man charged with assault after throwing alligator into a wendy's",
+          body: "no seriously thats an actual real headline",
+          article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+  });
 });
 
 describe("/api/articles/:article_id/comments)", () => {
