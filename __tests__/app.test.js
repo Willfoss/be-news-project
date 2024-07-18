@@ -459,6 +459,49 @@ describe("/api/articles", () => {
     });
   });
 
+  describe("GET query - limit and page", () => {
+    test("limit & page 200: responds with an array of articles with the addition of a total article count property", () => {
+      return request(app)
+        .get("/api/articles?limit=5&page=3")
+        .expect(200)
+        .then(({ body }) => {
+          body.articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+          });
+          expect(body.total_count).toBe(13);
+        });
+    });
+    test("limit & page 200: responds with an array of articles with the addition of a total article count property that shows the correct count when other queries are applied", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch&limit=5&page=3")
+        .expect(200)
+        .then(({ body }) => {
+          body.articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+          });
+          expect(body.total_count).toBe(12);
+        });
+    });
+  });
+
   describe("GET query - limit", () => {
     test("limit 200: responds with an array of article objects of a specified amount (limit)", () => {
       return request(app)
@@ -591,28 +634,6 @@ describe("/api/articles", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.message).toBe("not found");
-        });
-    });
-  });
-  describe("GET query - limit and page", () => {
-    test("limit & page 200: responds with an array of articles with the addition of a total article count property", () => {
-      return request(app)
-        .get("/api/articles?limit=5&page=3")
-        .expect(200)
-        .then(({ body }) => {
-          body.articles.forEach((article) => {
-            expect(article).toMatchObject({
-              author: expect.any(String),
-              title: expect.any(String),
-              article_id: expect.any(Number),
-              topic: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-              article_img_url: expect.any(String),
-              comment_count: expect.any(Number),
-              total_count: 13,
-            });
-          });
         });
     });
   });

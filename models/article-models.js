@@ -34,6 +34,7 @@ const fetchArticles = (sort_by = "created_at", order = "desc", topic, limit = 10
 
   if (topic) {
     queryString1 += ` WHERE topic = $1`;
+    queryString2 += ` WHERE topic = $1`;
     queryArray.push(topic);
   }
 
@@ -47,17 +48,15 @@ const fetchArticles = (sort_by = "created_at", order = "desc", topic, limit = 10
   return db
     .query(queryString1, queryArray)
     .then(({ rows }) => {
-      return Promise.all([db.query(queryString2), rows]);
+      return Promise.all([db.query(queryString2, queryArray), rows]);
     })
     .then(([{ rows }, queriedArticles]) => {
       const totalCount = rows.length;
       const numberOfRequiredPages = Math.ceil(totalCount / limit);
-      if (page > numberOfRequiredPages) {
+      if (page > numberOfRequiredPages && numberOfRequiredPages > 0) {
         return Promise.reject({ status: 404, message: "not found" });
       }
-      return queriedArticles.map((article) => {
-        return { ...article, total_count: totalCount };
-      });
+      return Promise.all([queriedArticles, totalCount]);
     });
 };
 
