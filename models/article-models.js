@@ -18,29 +18,50 @@ const fetchArticleById = (id) => {
     });
 };
 
-const fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
+const fetchArticles = (sort_by = "created_at", order = "desc", topic, limit = 10, page = 1) => {
   const validSortBys = ["article_id", "topic", "author", "votes", "created_at", "comment_count", "title"];
   const validOrders = ["asc", "desc", "ASC", "DESC"];
-  const topicArray = [];
+  const queryArray = [];
 
-  let queryString = `SELECT articles.article_id, articles.author, articles.title, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id)::int AS comment_count FROM articles 
+  let queryString1 = `SELECT articles.article_id, articles.author, articles.title, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id)::int AS comment_count FROM articles 
     LEFT JOIN comments ON comments.article_id=articles.article_id`;
 
+  let queryString2 = "SELECT article_id FROM articles";
+
+  if (Number.isNaN(+limit) || Number.isNaN(+page) || limit < 3 || limit > 25) {
+    return Promise.reject({ status: 400, message: "bad request" });
+  }
   if (!validSortBys.includes(sort_by) || !validOrders.includes(order)) {
     return Promise.reject({ status: 400, message: "bad request" });
   }
 
   if (topic) {
-    queryString += ` WHERE topic = $1`;
-    topicArray.push(topic);
+    queryString1 += ` WHERE topic = $1`;
+    queryArray.push(topic);
   }
 
-  queryString += ` GROUP BY articles.article_id`;
-  queryString += ` ORDER BY ${sort_by} ${order}`;
+  let offset = limit * page - limit;
 
-  return db.query(queryString, topicArray).then(({ rows }) => {
-    return rows;
-  });
+  queryString1 += ` GROUP BY articles.article_id`;
+  queryString1 += ` ORDER BY ${sort_by} ${order}`;
+  queryString1 += ` LIMIT ${limit}`;
+  queryString1 += ` OFFSET ${offset}`;
+
+  return db
+    .query(queryString1, queryArray)
+    .then(({ rows }) => {
+      return Promise.all([db.query(queryString2), rows]);
+    })
+    .then(([{ rows }, queriedArticles]) => {
+      const totalCount = rows.length;
+      const numberOfRequiredPages = Math.ceil(totalCount / limit);
+      if (page > numberOfRequiredPages) {
+        return Promise.reject({ status: 404, message: "not found" });
+      }
+      return queriedArticles.map((article) => {
+        return { ...article, total_count: totalCount };
+      });
+    });
 };
 
 const insertCommentByArticleId = (commentObj, id) => {

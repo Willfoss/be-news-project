@@ -20,9 +20,10 @@ const getArticleById = (request, response, next) => {
 };
 
 const getArticles = (request, response, next) => {
-  const { sort_by, order, topic } = request.query;
+  const { sort_by, order, topic, limit, page } = request.query;
+
   if (topic) {
-    Promise.all([fetchTopicByTopic(topic), fetchArticles(sort_by, order, topic)])
+    Promise.all([fetchTopicByTopic(topic), fetchArticles(sort_by, order, topic, limit, page)])
       .then(([doesTopicExists, articles]) => {
         if (!doesTopicExists) {
           return response.status(404).send({ message: "not found" });
@@ -33,7 +34,7 @@ const getArticles = (request, response, next) => {
         next(error);
       });
   } else {
-    fetchArticles(sort_by, order, topic)
+    fetchArticles(sort_by, order, topic, limit, page)
       .then((articles) => {
         return response.send({ articles });
       })

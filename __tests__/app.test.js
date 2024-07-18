@@ -107,12 +107,12 @@ describe("/api/articles/:article_id", () => {
 
 describe("/api/articles", () => {
   describe("GET", () => {
-    test("GET 200: responds with an array of articles objects to the client including a comment count and excluding the article body", () => {
+    test("GET 200: responds with an array of articles objects to the client including a comment count and excluding the article body. it also sets the default amount of data retrieval to 10 by default", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(13);
+          expect(body.articles.length).toBe(10);
           body.articles.forEach((article) => {
             expect(article).toMatchObject({
               author: expect.any(String),
@@ -143,7 +143,7 @@ describe("/api/articles", () => {
         .get("/api/articles?order=asc")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(13);
+          expect(body.articles.length).toBe(10);
           expect(body.articles).toBeSortedBy("created_at");
         });
     });
@@ -152,7 +152,7 @@ describe("/api/articles", () => {
         .get("/api/articles?order=desc")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(13);
+          expect(body.articles.length).toBe(10);
           expect(body.articles).toBeSortedBy("created_at", { descending: true });
         });
     });
@@ -171,7 +171,7 @@ describe("/api/articles", () => {
         .get("/api/articles?sort_by=article_id")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(13);
+          expect(body.articles.length).toBe(10);
           expect(body.articles).toBeSortedBy("article_id", { descending: true });
         });
     });
@@ -180,7 +180,7 @@ describe("/api/articles", () => {
         .get("/api/articles?sort_by=topic")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(13);
+          expect(body.articles.length).toBe(10);
           expect(body.articles).toBeSortedBy("topic", { descending: true });
         });
     });
@@ -189,7 +189,7 @@ describe("/api/articles", () => {
         .get("/api/articles?sort_by=author")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(13);
+          expect(body.articles.length).toBe(10);
           expect(body.articles).toBeSortedBy("author", { descending: true });
         });
     });
@@ -198,7 +198,7 @@ describe("/api/articles", () => {
         .get("/api/articles?sort_by=votes")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(13);
+          expect(body.articles.length).toBe(10);
           expect(body.articles).toBeSortedBy("votes", { descending: true });
         });
     });
@@ -207,7 +207,7 @@ describe("/api/articles", () => {
         .get("/api/articles?sort_by=created_at")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(13);
+          expect(body.articles.length).toBe(10);
           expect(body.articles).toBeSortedBy("created_at", { descending: true });
         });
     });
@@ -216,7 +216,7 @@ describe("/api/articles", () => {
         .get("/api/articles?sort_by=comment_count")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(13);
+          expect(body.articles.length).toBe(10);
           expect(body.articles).toBeSortedBy("comment_count", { descending: true });
         });
     });
@@ -225,7 +225,7 @@ describe("/api/articles", () => {
         .get("/api/articles?sort_by=title")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(13);
+          expect(body.articles.length).toBe(10);
           expect(body.articles).toBeSortedBy("title", { descending: true });
         });
     });
@@ -244,7 +244,7 @@ describe("/api/articles", () => {
         .get("/api/articles?sort_by=article_id&order=asc")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(13);
+          expect(body.articles.length).toBe(10);
           expect(body.articles).toBeSortedBy("article_id");
         });
     });
@@ -254,7 +254,7 @@ describe("/api/articles", () => {
         .get("/api/articles?sort_by=topic&order=asc")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(13);
+          expect(body.articles.length).toBe(10);
           expect(body.articles).toBeSortedBy("topic");
         });
     });
@@ -264,7 +264,7 @@ describe("/api/articles", () => {
         .get("/api/articles?sort_by=author&order=asc")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(13);
+          expect(body.articles.length).toBe(10);
           expect(body.articles).toBeSortedBy("author");
         });
     });
@@ -274,7 +274,7 @@ describe("/api/articles", () => {
         .get("/api/articles?sort_by=votes&order=asc")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(13);
+          expect(body.articles.length).toBe(10);
           expect(body.articles).toBeSortedBy("votes");
         });
     });
@@ -284,7 +284,7 @@ describe("/api/articles", () => {
         .get("/api/articles?sort_by=created_at&order=asc")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(13);
+          expect(body.articles.length).toBe(10);
           expect(body.articles).toBeSortedBy("created_at");
         });
     });
@@ -294,7 +294,7 @@ describe("/api/articles", () => {
         .get("/api/articles?sort_by=comment_count&order=asc")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(13);
+          expect(body.articles.length).toBe(10);
           expect(body.articles).toBeSortedBy("comment_count");
         });
     });
@@ -304,7 +304,7 @@ describe("/api/articles", () => {
         .get("/api/articles?sort_by=title&order=asc")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(13);
+          expect(body.articles.length).toBe(10);
           expect(body.articles).toBeSortedBy("title");
         });
     });
@@ -320,16 +320,16 @@ describe("/api/articles", () => {
   describe("GET QUERIES - topic", () => {
     test("topic query 200: responds with an array of articles matching the topic query passed in", () => {
       return request(app)
-        .get("/api/articles?topic=mitch")
+        .get("/api/articles?topic=cats")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles.length).toBe(12);
+          expect(body.articles.length).toBe(1);
           body.articles.forEach((article) => {
             expect(article).toMatchObject({
               author: expect.any(String),
               title: expect.any(String),
               article_id: expect.any(Number),
-              topic: "mitch",
+              topic: "cats",
               created_at: expect.any(String),
               votes: expect.any(Number),
               article_img_url: expect.any(String),
@@ -387,6 +387,164 @@ describe("/api/articles", () => {
         });
     });
   });
+
+  describe("GET query - limit", () => {
+    test("GET 200: responds with an array of article objects of a specified amount (limit)", () => {
+      return request(app)
+        .get("/api/articles?limit=5")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(5);
+          body.articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+          });
+        });
+    });
+    test("GET 200: responds with an with all the array of articles if the quantity is below the limit", () => {
+      return request(app)
+        .get("/api/articles?limit=20")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          body.articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+          });
+        });
+    });
+    test("GET 400: responds with a bad request if the limit is the wrong data type", () => {
+      return request(app)
+        .get("/api/articles?limit=five")
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("GET 400: responds with a bad request if the limit is outside the range of 3 - 25", () => {
+      return request(app)
+        .get("/api/articles?limit=30")
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+  });
+  describe("GET query - page", () => {
+    test("GET 200: responds with the array of article objects on the first page when page number is specified", () => {
+      return request(app)
+        .get("/api/articles?page=1")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(10);
+          body.articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+          });
+        });
+    });
+    test("GET 200: responds with the array of article objects on the first page when page number is NOT specified", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(10);
+          body.articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+          });
+        });
+    });
+    test("GET 200: responds with the array of article objects on the second page when page number is specified", () => {
+      return request(app)
+        .get("/api/articles?page=2")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(3);
+          body.articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+          });
+        });
+    });
+    test("GET 400: responds with a bad request message when a page number is the wrong data type", () => {
+      return request(app)
+        .get("/api/articles?page=two")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("GET 404: responds with a not found if the page number specified contains no articles", () => {
+      return request(app)
+        .get("/api/articles?page=3")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+  });
+  describe("GET query - limit and page", () => {
+    test("GET 200: responds with an array of articles with the addition of a total article count property", () => {
+      return request(app)
+        .get("/api/articles?limit=5&page=3")
+        .expect(200)
+        .then(({ body }) => {
+          body.articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+              total_count: 13,
+            });
+          });
+        });
+    });
+  });
+
   describe("POST", () => {
     test("POST 201: responds with the complete article object that has been sent in the request with the addition of comment_count property", () => {
       return request(app)
