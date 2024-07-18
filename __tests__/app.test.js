@@ -387,7 +387,7 @@ describe("/api/articles", () => {
         });
     });
   });
-  describe.only("POST", () => {
+  describe("POST", () => {
     test("POST 201: responds with the complete article object that has been sent in the request with the addition of comment_count property", () => {
       return request(app)
         .post("/api/articles")
