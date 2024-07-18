@@ -40,7 +40,7 @@ const fetchArticles = (sort_by = "created_at", order = "desc", topic, limit = 10
     queryArray.push(topic);
   }
 
-  let offset = limit * page - limit;
+  const offset = limit * page - limit;
 
   queryString1 += ` GROUP BY articles.article_id`;
   queryString1 += ` ORDER BY ${sort_by} ${order}`;
@@ -79,10 +79,20 @@ const insertCommentByArticleId = (commentObj, id) => {
   });
 };
 
-const fetchArticleCommentsByArticleId = (id) => {
+const fetchArticleCommentsByArticleId = (id, limit = 10, page = 1) => {
+  console.log(page);
+  const offset = limit * page - limit;
+
   const queryString = `SELECT * FROM comments 
   WHERE article_id = $1
-  ORDER BY created_at ASC`;
+  ORDER BY created_at ASC
+  LIMIT ${limit}
+  OFFSET ${offset}`;
+
+  if (Number.isNaN(+limit) || Number.isNaN(+page) || limit < 3 || limit > 25) {
+    return Promise.reject({ status: 400, message: "bad request" });
+  }
+
   const promiseArray = [fetchArticleById(id), db.query(queryString, [id])];
 
   return Promise.all(promiseArray).then(([checkArticleExists, query]) => {

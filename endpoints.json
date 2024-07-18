@@ -77,7 +77,7 @@
   },
   "POST /api/articles/:article_id/comments": {
     "description": "serves a comment object containing the details of the comment",
-    "queries": [],
+    "queries": ["limit", "page"],
     "exampleResponse": {
       "comment": {
         "article_id": 1,

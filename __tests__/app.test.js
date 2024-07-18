@@ -389,7 +389,7 @@ describe("/api/articles", () => {
   });
 
   describe("GET query - limit", () => {
-    test("GET 200: responds with an array of article objects of a specified amount (limit)", () => {
+    test("limit 200: responds with an array of article objects of a specified amount (limit)", () => {
       return request(app)
         .get("/api/articles?limit=5")
         .expect(200)
@@ -409,7 +409,7 @@ describe("/api/articles", () => {
           });
         });
     });
-    test("GET 200: responds with an with all the array of articles if the quantity is below the limit", () => {
+    test("limit 200: responds with an with all the array of articles if the quantity is below the limit", () => {
       return request(app)
         .get("/api/articles?limit=20")
         .expect(200)
@@ -429,14 +429,14 @@ describe("/api/articles", () => {
           });
         });
     });
-    test("GET 400: responds with a bad request if the limit is the wrong data type", () => {
+    test("limit 400: responds with a bad request if the limit is the wrong data type", () => {
       return request(app)
         .get("/api/articles?limit=five")
         .then(({ body }) => {
           expect(body.message).toBe("bad request");
         });
     });
-    test("GET 400: responds with a bad request if the limit is outside the range of 3 - 25", () => {
+    test("limit 400: responds with a bad request if the limit is outside the range of 3 - 25", () => {
       return request(app)
         .get("/api/articles?limit=30")
         .then(({ body }) => {
@@ -445,7 +445,7 @@ describe("/api/articles", () => {
     });
   });
   describe("GET query - page", () => {
-    test("GET 200: responds with the array of article objects on the first page when page number is specified", () => {
+    test("page 200: responds with the array of article objects on the first page when page number is specified", () => {
       return request(app)
         .get("/api/articles?page=1")
         .expect(200)
@@ -465,7 +465,7 @@ describe("/api/articles", () => {
           });
         });
     });
-    test("GET 200: responds with the array of article objects on the first page when page number is NOT specified", () => {
+    test("page 200: responds with the array of article objects on the first page when page number is NOT specified", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
@@ -485,7 +485,7 @@ describe("/api/articles", () => {
           });
         });
     });
-    test("GET 200: responds with the array of article objects on the second page when page number is specified", () => {
+    test("page 200: responds with the array of article objects on the second page when page number is specified", () => {
       return request(app)
         .get("/api/articles?page=2")
         .expect(200)
@@ -505,7 +505,7 @@ describe("/api/articles", () => {
           });
         });
     });
-    test("GET 400: responds with a bad request message when a page number is the wrong data type", () => {
+    test("page 400: responds with a bad request message when a page number is the wrong data type", () => {
       return request(app)
         .get("/api/articles?page=two")
         .expect(400)
@@ -513,7 +513,7 @@ describe("/api/articles", () => {
           expect(body.message).toBe("bad request");
         });
     });
-    test("GET 404: responds with a not found if the page number specified contains no articles", () => {
+    test("page 404: responds with a not found if the page number specified contains no articles", () => {
       return request(app)
         .get("/api/articles?page=3")
         .expect(404)
@@ -523,7 +523,7 @@ describe("/api/articles", () => {
     });
   });
   describe("GET query - limit and page", () => {
-    test("GET 200: responds with an array of articles with the addition of a total article count property", () => {
+    test("limit & page 200: responds with an array of articles with the addition of a total article count property", () => {
       return request(app)
         .get("/api/articles?limit=5&page=3")
         .expect(200)
@@ -669,12 +669,12 @@ describe("/api/articles", () => {
 
 describe("/api/articles/:article_id/comments)", () => {
   describe("GET", () => {
-    test("GET 200: responds with an array of comments objects from a particular article to the client", () => {
+    test("GET 200: responds with an array of comments objects from a particular article to the client which be default is limited to 10 comments", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
         .then(({ body }) => {
-          expect(body.comments.length).toBe(11);
+          expect(body.comments.length).toBe(10);
           body.comments.forEach((comment) => {
             expect(comment).toMatchObject({
               comment_id: expect.any(Number),
@@ -720,6 +720,136 @@ describe("/api/articles/:article_id/comments)", () => {
         });
     });
   });
+  describe("GET query - limit", () => {
+    test("limit 200: responds with an array of objects of the specified query limit size", () => {
+      return request(app)
+        .get("/api/articles/1/comments?limit=5")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments.length).toBe(5);
+          body.comments.forEach((comment) => {
+            expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              article_id: expect.any(Number),
+            });
+          });
+        });
+    });
+    test("limit 200: responds with an empty array of no comments are found with the query", () => {
+      return request(app)
+        .get("/api/articles/8/comments?limit=5")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).toEqual([]);
+        });
+    });
+    test("limit 400: responds with a bad request message if the limit is the wrong datatype", () => {
+      return request(app)
+        .get("/api/articles/1/comments?limit=ten")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("limit 400: responds with a bad request message if the limit is outside of the range 3-25", () => {
+      return request(app)
+        .get("/api/articles/1/comments?limit=26")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+  });
+  describe("GET query - page", () => {
+    test("page 200: returns the first page of the results when the page number is not specified", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments.length).toBe(10);
+          body.comments.forEach((comment) => {
+            expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              article_id: expect.any(Number),
+            });
+          });
+        });
+    });
+    test("page 200: returns the first page of the results when the page number is specified", () => {
+      return request(app)
+        .get("/api/articles/1/comments?page=1")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments.length).toBe(10);
+          body.comments.forEach((comment) => {
+            expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              article_id: expect.any(Number),
+            });
+          });
+        });
+    });
+    test("page 200: returns the next page of the results when the page number is increased", () => {
+      return request(app)
+        .get("/api/articles/1/comments?page=2")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments.length).toBe(1);
+          body.comments.forEach((comment) => {
+            expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              article_id: expect.any(Number),
+            });
+          });
+        });
+    });
+    test("page 400: returns a bad request message when the page number is given as the wrong datatype", () => {
+      return request(app)
+        .get("/api/articles/1/comments?page=one")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+  });
+
+  describe("GET query - limit & page", () => {
+    test(" query & topic 200: returns array of comment objects when queried with both limit and page", () => {
+      return request(app)
+        .get("/api/articles/1/comments?limit=5&page=2")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments.length).toBe(5);
+          body.comments.forEach((comment) => {
+            expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              article_id: expect.any(Number),
+            });
+          });
+        });
+    });
+  });
+
   describe("POST", () => {
     test("POST 201: responds to the client with the comment that has been posted", () => {
       return request(app)
