@@ -7,6 +7,8 @@ A fully tested backend project based on reddit. This project uses REST APIs to f
 3. comments based on articles
 4. users
 
+[Hosted version here!](https://be-news-project-p4dz.onrender.com/api)
+
 ---
 
 ## Project setup
