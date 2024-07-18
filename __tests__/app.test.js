@@ -480,7 +480,7 @@ describe("/api/articles", () => {
           });
         });
     });
-    test("limit 200: responds with an with all the array of articles if the quantity is below the limit", () => {
+    test("limit 200: responds with all the articles if the quantity is below the limit", () => {
       return request(app)
         .get("/api/articles?limit=20")
         .expect(200)
