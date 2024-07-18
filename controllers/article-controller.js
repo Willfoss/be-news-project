@@ -5,6 +5,7 @@ const {
   alterArticleByArticleId,
   insertCommentByArticleId,
   insertArticle,
+  removeArticle,
 } = require("../models/article-models");
 const { fetchTopicByTopic } = require("../models/topic-models");
 
@@ -20,9 +21,10 @@ const getArticleById = (request, response, next) => {
 };
 
 const getArticles = (request, response, next) => {
-  const { sort_by, order, topic } = request.query;
+  const { sort_by, order, topic, limit, page } = request.query;
+
   if (topic) {
-    Promise.all([fetchTopicByTopic(topic), fetchArticles(sort_by, order, topic)])
+    Promise.all([fetchTopicByTopic(topic), fetchArticles(sort_by, order, topic, limit, page)])
       .then(([doesTopicExists, articles]) => {
         if (!doesTopicExists) {
           return response.status(404).send({ message: "not found" });
@@ -33,7 +35,7 @@ const getArticles = (request, response, next) => {
         next(error);
       });
   } else {
-    fetchArticles(sort_by, order, topic)
+    fetchArticles(sort_by, order, topic, limit, page)
       .then((articles) => {
         return response.send({ articles });
       })
@@ -46,7 +48,8 @@ const getArticles = (request, response, next) => {
 //hmmm been debating if this one should go into the comments controller and have good arguments for either case. any feedback on this welcomed
 const getArticleCommentsByArticleId = (request, response, next) => {
   const { article_id } = request.params;
-  fetchArticleCommentsByArticleId(article_id)
+  const { limit, page } = request.query;
+  fetchArticleCommentsByArticleId(article_id, limit, page)
     .then((comments) => {
       return response.send({ comments });
     })
@@ -90,6 +93,17 @@ const addArticle = (request, response, next) => {
     });
 };
 
+const deleteArticle = (request, response, next) => {
+  const { article_id } = request.params;
+  removeArticle(article_id)
+    .then(() => {
+      return response.sendStatus(204);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
 module.exports = {
   getArticleById,
   addCommentByArticleId,
@@ -97,4 +111,5 @@ module.exports = {
   getArticleCommentsByArticleId,
   getArticles,
   addArticle,
+  deleteArticle,
 };

@@ -18,7 +18,7 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all articles",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": ["author", "topic", "sort_by", "order", "limit", "page"],
     "exampleResponse": {
       "articles": [
         {
@@ -77,7 +77,7 @@
   },
   "POST /api/articles/:article_id/comments": {
     "description": "serves a comment object containing the details of the comment",
-    "queries": [],
+    "queries": ["limit", "page"],
     "exampleResponse": {
       "comment": {
         "article_id": 1,
@@ -113,53 +113,73 @@
   "GET /api/users": {
     "description": "serves an array of user objects",
     "queries": [],
-    "exampleResponse": [
-      {
-        "username": "butter_bridge",
-        "name": "jonny",
-        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
-      },
-      {
-        "username": "icellusedkars",
-        "name": "sam",
-        "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
-      }
-    ]
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "butter_bridge",
+          "name": "jonny",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        },
+        {
+          "username": "icellusedkars",
+          "name": "sam",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+        }
+      ]
+    }
   },
   "GET /api/users/:username": {
     "description": "serves a user object picked by username",
     "queries": [],
     "exampleResponse": {
-      "username": "butter_bridge",
-      "name": "jonny",
-      "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      "username": {
+        "username": "butter_bridge",
+        "name": "jonny",
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      }
     }
   },
   "PATCH /api/comments/:comment_id": {
     "description": "serves a comment with an updated vote property",
     "queries": [],
     "exampleResponse": {
-      "body": " I carry a log — yes. Is it funny to you? It is not to me.",
-      "votes": -100,
-      "author": "icellusedkars",
-      "article_id": 1,
-      "created_at": 1582459260000,
-      "comment_id": 4
+      "comment": {
+        "body": " I carry a log — yes. Is it funny to you? It is not to me.",
+        "votes": -100,
+        "author": "icellusedkars",
+        "article_id": 1,
+        "created_at": 1582459260000,
+        "comment_id": 4
+      }
     }
   },
   "POST /api/articles": {
     "description": "serves an article object of the article that has been requested to add to the db",
     "queries": [],
     "exampleResponse": {
-      "article_id": 14,
-      "title": "florida man charged with assault after throwing alligator into a wendy's",
-      "topic": "paper",
-      "author": "butter_bridge",
-      "body": "no seriously thats an actual real headline",
-      "votes": 0,
-      "created_at": "2018-05-30T15:59:13.341Z",
-      "article_img_url": "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700",
-      "comment_count": 0
+      "article": {
+        "article_id": 14,
+        "title": "florida man charged with assault after throwing alligator into a wendy's",
+        "topic": "paper",
+        "author": "butter_bridge",
+        "body": "no seriously thats an actual real headline",
+        "votes": 0,
+        "created_at": "2018-05-30T15:59:13.341Z",
+        "article_img_url": "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700",
+        "comment_count": 0
+      }
     }
+  },
+  "POST /api/topics": {
+    "description": "serves an object with the details of body sent in the request",
+    "queries": [],
+    "exampleResponse": {
+      "topics": [{ "slug": "football", "description": "Footie!" }]
+    }
+  },
+  "DELETE /api/articles": {
+    "description": "delete a particular article and all it's comments from the db",
+    "queries": [],
+    "exampleResponse": "not response send with this endpoint"
   }
 }
