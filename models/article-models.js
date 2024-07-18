@@ -43,7 +43,10 @@ const fetchArticles = (sort_by = "created_at", order = "desc", topic, limit = 10
   queryString1 += ` GROUP BY articles.article_id`;
   queryString1 += ` ORDER BY ${sort_by} ${order}`;
   queryString1 += ` LIMIT ${limit}`;
-  queryString1 += ` OFFSET ${offset}`;
+
+  if (page > 1) {
+    queryString1 += ` OFFSET ${offset}`;
+  }
 
   return db
     .query(queryString1, queryArray)
@@ -91,9 +94,6 @@ const fetchArticleCommentsByArticleId = (id, limit = 10, page = 1) => {
   const promiseArray = [fetchArticleById(id), db.query(queryString, [id])];
 
   return Promise.all(promiseArray).then(([checkArticleExists, query]) => {
-    if (!checkArticleExists) {
-      return Promise.reject({ status: 404, message: "not found" });
-    }
     return query.rows;
   });
 };
@@ -125,30 +125,20 @@ const insertArticle = (author, title, body, topic, article_img_url) => {
 
   let queryString2 = `SELECT articles.*, COUNT(comments.comment_id)::int AS comment_count FROM articles 
   LEFT JOIN comments ON comments.article_id=articles.article_id
-  WHERE (articles.author = $1
-  AND articles.title = $2
-  AND articles.body = $3
-  AND articles.topic = $4`;
+  WHERE articles.article_id = $1
+  GROUP BY articles.article_id`;
 
   if (article_img_url) {
     queryString1 += `, article_img_url) VALUES ($1, $2, $3, $4, $5) RETURNING *;`;
-    queryString2 += ` AND articles.article_img_url= $5) GROUP BY articles.article_id`;
     articlePropertyArray.push(article_img_url);
   } else {
     queryString1 += `) VALUES ($1, $2, $3, $4) RETURNING *;`;
-    queryString2 += `) GROUP BY articles.article_id`;
   }
-
-  //WHY DOES THIS SOMETIMES WORK AND SOMETIMES NOT!?!?!?!
-  // return Promise.all([db.query(queryString1, articlePropertyArray), db.query(queryString2, articlePropertyArray)]).then(([insertQuery, retrieveDataQuery]) => {
-  //   console.log(insertQuery.rows, retrieveDataQuery.rows);
-  //   return retrieveDataQuery.rows[0];
-  // });
 
   return db
     .query(queryString1, articlePropertyArray)
-    .then(() => {
-      return db.query(queryString2, articlePropertyArray);
+    .then(({ rows }) => {
+      return db.query(queryString2, [rows[0].article_id]);
     })
     .then(({ rows }) => {
       return rows[0];
