@@ -159,6 +159,16 @@ const insertArticle = (author, title, body, topic, article_img_url) => {
     });
 };
 
+const removeArticle = (id) => {
+  const queryString = `DELETE FROM articles WHERE article_id = $1`;
+
+  return db.query(queryString, [id]).then(({ rowCount }) => {
+    if (rowCount === 0) {
+      return Promise.reject({ status: 404, message: "not found" });
+    }
+  });
+};
+
 module.exports = {
   fetchArticleById,
   fetchArticles,
@@ -166,4 +176,5 @@ module.exports = {
   alterArticleByArticleId,
   insertCommentByArticleId,
   insertArticle,
+  removeArticle,
 };

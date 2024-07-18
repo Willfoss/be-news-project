@@ -150,6 +150,30 @@ describe("/api/articles/:article_id", () => {
         });
     });
   });
+  describe.only("DELETE", () => {
+    test("DELETE 204: responds with a 204 status upon successful deletion for an article with no comments", () => {
+      return request(app).delete("/api/articles/2").expect(204);
+    });
+    test("DELETE 204: responds with a 204 status upon successful deletion for an article with comments", () => {
+      return request(app).delete("/api/articles/3").expect(204);
+    });
+    test("DELETE 400: responds with a bad request message when trying to delete an article using the wrong data type for article id", () => {
+      return request(app)
+        .delete("/api/articles/two")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("DELETE 404: responds with a bad request message when trying to delete an article that does not yet exist in the db", () => {
+      return request(app)
+        .delete("/api/articles/999")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+  });
 });
 
 describe("/api/articles", () => {
