@@ -1,4 +1,4 @@
-const { fetchTopics, fetchTopicByTopic } = require("../models/topic-models");
+const { fetchTopics, fetchTopicByTopic, insertTopic } = require("../models/topic-models");
 
 const getTopics = (request, response, next) => {
   fetchTopics()
@@ -21,4 +21,15 @@ const getTopicByTopic = (request, response, next) => {
     });
 };
 
-module.exports = { getTopics, getTopicByTopic };
+const addTopic = (request, response, next) => {
+  const { slug, description } = request.body;
+  insertTopic(slug, description)
+    .then((topic) => {
+      response.status(201).send({ topic });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+module.exports = { getTopics, getTopicByTopic, addTopic };
