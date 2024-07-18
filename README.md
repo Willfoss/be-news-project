@@ -1,8 +1,13 @@
 # News API
 
-A fully tested backend project based on reddit. This project uses REST APIs to fetch data from a news website database to the client.
+A fully tested backend project based on reddit. This project uses REST APIs to fetch data from a news website database. The endpoints give information about:
 
-hosted version: TBC
+1. topics,
+2. articles related to those topics,
+3. comments based on articles
+4. users
+
+<a href="https://be-news-project-p4dz.onrender.com/api" target="_blank">Host version here!</a>
 
 ---
 
@@ -12,11 +17,11 @@ clone the repo using the following links:
 
 ##### HTTP
 
-    https://github.com/Willfoss/be-news-project.git
+    git clone https://github.com/Willfoss/be-news-project.git
 
 ##### SSH
 
-    git@github.com:Willfoss/be-news-project.git
+    git clone git@github.com:Willfoss/be-news-project.git
 
 Next, install the various npm packages to run the project:
 
@@ -56,6 +61,6 @@ to run the test file, run the following command
 
 ## Version requirements
 
-Node.js - 20.14.0
+Node.js - 20.14.0 (or later)
 
-Postgres - 14.12
+Postgres - 14.12 (or later)
