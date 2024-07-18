@@ -93,7 +93,7 @@ const insertArticle = (author, title, body, topic, article_img_url) => {
     return Promise.reject({ status: 400, message: "bad request" });
   }
 
-  const insertArray = [author, title, body, topic];
+  const articlePropertyArray = [author, title, body, topic];
 
   let queryString1 = `INSERT INTO articles (author, title, body, topic`;
 
@@ -107,23 +107,26 @@ const insertArticle = (author, title, body, topic, article_img_url) => {
   if (article_img_url) {
     queryString1 += `, article_img_url) VALUES ($1, $2, $3, $4, $5) RETURNING *;`;
     queryString2 += ` AND articles.article_img_url= $5) GROUP BY articles.article_id`;
-    insertArray.push(article_img_url);
+    articlePropertyArray.push(article_img_url);
   } else {
     queryString1 += `) VALUES ($1, $2, $3, $4) RETURNING *;`;
     queryString2 += `) GROUP BY articles.article_id`;
   }
 
   //WHY DOES THIS SOMETIMES WORK AND SOMETIMES NOT!?!?!?!
-  // return Promise.all([db.query(queryString1, insertArray), db.query(queryString2, insertArray)]).then(([insertQuery, retrieveDataQuery]) => {
+  // return Promise.all([db.query(queryString1, articlePropertyArray), db.query(queryString2, articlePropertyArray)]).then(([insertQuery, retrieveDataQuery]) => {
   //   console.log(insertQuery.rows, retrieveDataQuery.rows);
   //   return retrieveDataQuery.rows[0];
   // });
 
-  return db.query(queryString1, insertArray).then(() => {
-    return db.query(queryString2, insertArray).then(({ rows }) => {
+  return db
+    .query(queryString1, articlePropertyArray)
+    .then(() => {
+      return db.query(queryString2, articlePropertyArray);
+    })
+    .then(({ rows }) => {
       return rows[0];
     });
-  });
 };
 
 module.exports = {
