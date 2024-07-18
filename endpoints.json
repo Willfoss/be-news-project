@@ -31,7 +31,8 @@
           "votes": 0,
           "comment_count": 6
         }
-      ]
+      ],
+      "total_count": "number value if using pagination"
     }
   },
   "GET /api/articles/:article_id": {

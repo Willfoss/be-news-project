@@ -485,19 +485,16 @@ describe("/api/articles", () => {
         .get("/api/articles?topic=mitch&limit=5&page=3")
         .expect(200)
         .then(({ body }) => {
-          body.articles.forEach((article) => {
-            expect(article).toMatchObject({
-              author: expect.any(String),
-              title: expect.any(String),
-              article_id: expect.any(Number),
-              topic: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-              article_img_url: expect.any(String),
-              comment_count: expect.any(Number),
-            });
-          });
+          expect(body.articles.length).toBe(2);
           expect(body.total_count).toBe(12);
+        });
+    });
+    test("limit & page 200: responds with an array of articles with the addition of a total article count property that shows the correct count when other queries are applied and sorted by the correct query", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch&limit=5&page=3&sort_by=article_id&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("article_id");
         });
     });
   });
