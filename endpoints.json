@@ -32,7 +32,7 @@
           "comment_count": 6
         }
       ],
-      "total_count": "number value if using pagination"
+      "total_count": "number value if querying with pagination"
     }
   },
   "GET /api/articles/:article_id": {
