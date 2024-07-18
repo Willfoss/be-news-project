@@ -5,6 +5,7 @@ const {
   alterArticleByArticleId,
   insertCommentByArticleId,
   insertArticle,
+  removeArticle,
 } = require("../models/article-models");
 const { fetchTopicByTopic } = require("../models/topic-models");
 
@@ -92,6 +93,17 @@ const addArticle = (request, response, next) => {
     });
 };
 
+const deleteArticle = (request, response, next) => {
+  const { article_id } = request.params;
+  removeArticle(article_id)
+    .then(() => {
+      return response.sendStatus(204);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
 module.exports = {
   getArticleById,
   addCommentByArticleId,
@@ -99,4 +111,5 @@ module.exports = {
   getArticleCommentsByArticleId,
   getArticles,
   addArticle,
+  deleteArticle,
 };
