@@ -100,7 +100,6 @@ const deleteArticle = (request, response, next) => {
       return response.sendStatus(204);
     })
     .catch((error) => {
-      console.log(error);
       next(error);
     });
 };

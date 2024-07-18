@@ -150,7 +150,7 @@ describe("/api/articles/:article_id", () => {
         });
     });
   });
-  describe.only("DELETE", () => {
+  describe("DELETE", () => {
     test("DELETE 204: responds with a 204 status upon successful deletion for an article with no comments", () => {
       return request(app).delete("/api/articles/2").expect(204);
     });

@@ -176,5 +176,10 @@
     "exampleResponse": {
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
+  },
+  "DELETE /api/articles": {
+    "description": "delete a particular article and all it's comments from the db",
+    "queries": [],
+    "exampleResponse": "not response send with this endpoint"
   }
 }
