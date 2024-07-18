@@ -15,4 +15,13 @@ const fetchTopicByTopic = (topic) => {
   });
 };
 
-module.exports = { fetchTopicByTopic, fetchTopics };
+const insertTopic = (slug, description) => {
+  const queryString = `INSERT INTO topics (slug, description)
+  VALUES ($1, $2) RETURNING *`;
+
+  return db.query(queryString, [slug, description]).then(({ rows }) => {
+    return rows[0];
+  });
+};
+
+module.exports = { fetchTopicByTopic, fetchTopics, insertTopic };

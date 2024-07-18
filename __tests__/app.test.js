@@ -27,6 +27,53 @@ describe("/api/topics testing", () => {
         });
     });
   });
+  describe("POST", () => {
+    test("POST 201: returns the new topic requested by the user", () => {
+      return request(app)
+        .post("/api/topics")
+        .send({ slug: "hello", description: "my name is will" })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.topic).toMatchObject({
+            slug: "hello",
+            description: "my name is will",
+          });
+        });
+    });
+    test("POST 201: ignores any extra properties sent in the request body", () => {
+      return request(app)
+        .post("/api/topics")
+        .send({ slug: "hello", description: "my name is will", id: 4 })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.topic).toMatchObject({
+            slug: "hello",
+            description: "my name is will",
+          });
+          expect(body.topic.hasOwnProperty("id")).toBe(false);
+        });
+    });
+    test("POST 201: can be inserted with the description property missing", () => {
+      return request(app)
+        .post("/api/topics")
+        .send({ slug: "hello" })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.topic).toMatchObject({
+            slug: "hello",
+          });
+        });
+    });
+    test("POST 400: sends a bad request message when the topic is sent with missing required properties", () => {
+      return request(app)
+        .post("/api/topics")
+        .send({ description: "my name is will" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+  });
 });
 
 describe("/api/topics/:topic", () => {

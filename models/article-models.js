@@ -80,7 +80,6 @@ const insertCommentByArticleId = (commentObj, id) => {
 };
 
 const fetchArticleCommentsByArticleId = (id, limit = 10, page = 1) => {
-  console.log(page);
   const offset = limit * page - limit;
 
   const queryString = `SELECT * FROM comments 
