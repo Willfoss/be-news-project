@@ -500,6 +500,7 @@ describe("/api/articles", () => {
           });
         });
     });
+    //add for default query here
     test("limit 400: responds with a bad request if the limit is the wrong data type", () => {
       return request(app)
         .get("/api/articles?limit=five")
@@ -616,6 +617,8 @@ describe("/api/articles", () => {
     });
   });
 
+  //remove uncessary checks of object properties^^^^^^
+
   describe("POST", () => {
     test("POST 201: responds with the complete article object that has been sent in the request with the addition of comment_count property", () => {
       return request(app)
@@ -635,10 +638,10 @@ describe("/api/articles", () => {
             topic: "paper",
             author: "butter_bridge",
             body: "no seriously thats an actual real headline",
-            votes: expect.any(Number),
+            votes: 0,
             created_at: expect.any(String),
             article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-            comment_count: expect.any(Number),
+            comment_count: 0,
           });
         });
     });
@@ -659,10 +662,10 @@ describe("/api/articles", () => {
             topic: "paper",
             author: "butter_bridge",
             body: "no seriously thats an actual real headline",
-            votes: expect.any(Number),
+            votes: 0,
             created_at: expect.any(String),
             article_img_url: "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700",
-            comment_count: expect.any(Number),
+            comment_count: 0,
           });
         });
     });
