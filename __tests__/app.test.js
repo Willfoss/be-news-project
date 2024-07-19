@@ -4,7 +4,6 @@ const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index");
 const request = require("supertest");
 const endpoints = require("../endpoints.json");
-const { convertTimestampToDate } = require("../db/seeds/utils");
 
 beforeEach(() => seed(data));
 
@@ -459,6 +458,108 @@ describe("/api/articles", () => {
     });
   });
 
+  describe("GET query - author", () => {
+    test("author query 200: responds with an array of articles matching the author query passed in", () => {
+      return request(app)
+        .get("/api/articles?author=butter_bridge")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(4);
+          body.articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: "butter_bridge",
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+          });
+        });
+    });
+    test("author query 200: responds an empty array if there are no articles written by that author", () => {
+      return request(app)
+        .get("/api/articles?author=lurker")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toEqual([]);
+        });
+    });
+    test("author query 200: articles are ordered in descending order by created at by default for authors", () => {
+      return request(app)
+        .get("/api/articles?author=butter_bridge")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+    test("author query 200: articles are ordered in ascending order by created for authors", () => {
+      return request(app)
+        .get("/api/articles?author=butter_bridge&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("created_at");
+        });
+    });
+    test("author query 404: responds with a not found message if no articles are found and the author does not exist", () => {
+      return request(app)
+        .get("/api/articles?author=bob")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+  });
+
+  describe("GET QUERY - author & topic", () => {
+    test("author & topic query 200: returns an array of articles of a particular topic written by a particular author", () => {
+      return request(app)
+        .get("/api/articles?author=rogersop&topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(2);
+          body.articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: "rogersop",
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: "mitch",
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+          });
+        });
+    });
+    test("author & topic query 200: returns an empty array if the user and topic exist but no articles are written by that user for that topic", () => {
+      return request(app)
+        .get("/api/articles?author=butter_bridge&topic=paper")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toEqual([]);
+        });
+    });
+    test("author & topic query 200: articles is still sorted as expected when addition queries are added", () => {
+      return request(app)
+        .get("/api/articles?author=butter_bridge&topic=mitch&sort_by=article_id&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("article_id");
+        });
+    });
+    test("author & topic query 404: returns not found error message if either one of the author or topics don't exist", () => {
+      return request(app)
+        .get("/api/articles?author=lesley&topic=paper")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+  });
+
   describe("GET query - limit and page", () => {
     test("limit & page 200: responds with an array of articles with the addition of a total article count property", () => {
       return request(app)
@@ -606,8 +707,6 @@ describe("/api/articles", () => {
         });
     });
   });
-
-  //remove uncessary checks of object properties^^^^^^
 
   describe("POST", () => {
     test("POST 201: responds with the complete article object that has been sent in the request with the addition of comment_count property", () => {

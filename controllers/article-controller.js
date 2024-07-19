@@ -1,4 +1,4 @@
-const { totalCount } = require("../db/connection");
+const db = require("../db/connection");
 const {
   fetchArticleById,
   fetchArticles,
@@ -9,6 +9,7 @@ const {
   removeArticle,
 } = require("../models/article-models");
 const { fetchTopicByTopic } = require("../models/topic-models");
+const { fetchUserByUsername } = require("../models/user-model");
 
 const getArticleById = (request, response, next) => {
   const { article_id } = request.params;
@@ -22,18 +23,35 @@ const getArticleById = (request, response, next) => {
 };
 
 const getArticles = (request, response, next) => {
-  const { sort_by, order, topic, limit, page } = request.query;
+  const { sort_by, order, topic, author, limit, page } = request.query;
 
-  if (topic) {
-    Promise.all([fetchTopicByTopic(topic), fetchArticles(sort_by, order, topic, limit, page)])
-      .then(([doesTopicExists, [articles, total_count]]) => {
+  if (topic && author) {
+    Promise.all([fetchTopicByTopic(topic), fetchUserByUsername(author), fetchArticles(sort_by, order, topic, author, limit, page)])
+      .then(([doesTopicExist, doesAuthorExist, [articles, total_count]]) => {
+        return response.send({ articles, total_count });
+      })
+      .catch((error) => {
+        next(error);
+      });
+  }
+  if (topic && !author) {
+    Promise.all([fetchTopicByTopic(topic), fetchArticles(sort_by, order, topic, author, limit, page)])
+      .then(([doesTopicExist, [articles, total_count]]) => {
+        return response.send({ articles, total_count });
+      })
+      .catch((error) => {
+        next(error);
+      });
+  } else if (author && !topic) {
+    Promise.all([fetchUserByUsername(author), fetchArticles(sort_by, order, topic, author, limit, page)])
+      .then(([doesAuthorExist, [articles, total_count]]) => {
         return response.send({ articles, total_count });
       })
       .catch((error) => {
         next(error);
       });
   } else {
-    fetchArticles(sort_by, order, topic, limit, page)
+    fetchArticles(sort_by, order, topic, author, limit, page)
       .then(([articles, total_count]) => {
         return response.send({ articles, total_count });
       })

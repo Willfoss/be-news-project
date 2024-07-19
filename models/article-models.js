@@ -1,5 +1,4 @@
 const db = require("../db/connection");
-const { articleData } = require("../db/data/test-data");
 
 const fetchArticleById = (id) => {
   return db
@@ -18,7 +17,7 @@ const fetchArticleById = (id) => {
     });
 };
 
-const fetchArticles = (sort_by = "created_at", order = "desc", topic, limit = 10, page = 1) => {
+const fetchArticles = (sort_by = "created_at", order = "desc", topic, author, limit = 10, page = 1) => {
   const validSortBys = ["article_id", "topic", "author", "votes", "created_at", "comment_count", "title"];
   const validOrders = ["asc", "desc", "ASC", "DESC"];
   const queryArray = [];
@@ -32,10 +31,19 @@ const fetchArticles = (sort_by = "created_at", order = "desc", topic, limit = 10
     return Promise.reject({ status: 400, message: "bad request" });
   }
 
-  if (topic) {
+  if (topic && author) {
+    queryString1 += ` WHERE articles.topic = $1 AND articles.author = $2`;
+    queryString2 += ` WHERE articles.topic = $1 AND articles.author = $2`;
+    queryArray.push(topic);
+    queryArray.push(author);
+  } else if (topic && !author) {
     queryString1 += ` WHERE topic = $1`;
     queryString2 += ` WHERE topic = $1`;
     queryArray.push(topic);
+  } else if (author && !topic) {
+    queryString1 += ` WHERE articles.author = $1`;
+    queryString2 += ` WHERE articles.author = $1`;
+    queryArray.push(author);
   }
 
   const offset = (page - 1) * limit;
