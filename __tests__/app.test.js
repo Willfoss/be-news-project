@@ -1302,7 +1302,7 @@ describe("/api/users testing", () => {
         });
     });
   });
-  describe.only("POST", () => {
+  describe("POST", () => {
     test("POST 201: responds with the posted user object and the corresponding user details", () => {
       return request(app)
         .post("/api/users")
