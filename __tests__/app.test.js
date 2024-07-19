@@ -1302,6 +1302,79 @@ describe("/api/users testing", () => {
         });
     });
   });
+  describe.only("POST", () => {
+    test("POST 201: responds with the posted user object and the corresponding user details", () => {
+      return request(app)
+        .post("/api/users")
+        .send({
+          username: "willfoss",
+          name: "will",
+          avatar_url: "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+        })
+        .then(({ body }) => {
+          expect(body.user).toMatchObject({
+            username: "willfoss",
+            name: "will",
+            avatar_url: "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+          });
+        });
+    });
+    test("POST 201:ignores any uncessary properties within the request", () => {
+      return request(app)
+        .post("/api/users")
+        .send({
+          username: "willfoss",
+          name: "will",
+          avatar_url: "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+          hobby: "running",
+        })
+        .then(({ body }) => {
+          expect(body.user).toMatchObject({
+            username: "willfoss",
+            name: "will",
+            avatar_url: "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+          });
+        });
+    });
+    test("POST 201: works without an image url being sent in the request", () => {
+      return request(app)
+        .post("/api/users")
+        .send({
+          username: "willfoss",
+          name: "will",
+        })
+        .then(({ body }) => {
+          expect(body.user).toMatchObject({
+            username: "willfoss",
+            name: "will",
+          });
+        });
+    });
+    test("POST 400: returns a bad request when the request is send without required properties", () => {
+      return request(app)
+        .post("/api/users")
+        .send({
+          username: "willfoss",
+          avatar_url: "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("POST 400: returns a bad request when username already exists", () => {
+      return request(app)
+        .post("/api/users")
+        .send({
+          username: "butter_bridge",
+          avatar_url: "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+  });
 });
 
 describe("/api/users/:username testing", () => {

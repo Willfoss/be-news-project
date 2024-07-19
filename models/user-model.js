@@ -20,6 +20,14 @@ const fetchUserByUsername = (id) => {
   });
 };
 
+const insertUser = (username, name, img_url) => {
+  const queryString = `INSERT INTO users (username, name, avatar_url)
+  VALUES ($1, $2, $3) RETURNING *`;
+  return db.query(queryString, [username, name, img_url]).then(({ rows }) => {
+    return rows[0];
+  });
+};
+
 const removeUserByUsername = (username) => {
   const queryString = `DELETE FROM users WHERE username = $1`;
 
@@ -30,4 +38,4 @@ const removeUserByUsername = (username) => {
   });
 };
 
-module.exports = { fetchUsers, fetchUserByUsername, removeUserByUsername };
+module.exports = { fetchUsers, fetchUserByUsername, removeUserByUsername, insertUser };

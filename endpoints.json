@@ -173,6 +173,15 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+  "POST /api/users": {
+    "description": "serves an object with the new user",
+    "queries": [],
+    "exampleResponse": {
+      "username": "willfoss",
+      "name": "will",
+      "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+    }
+  },
   "DELETE /api/articles": {
     "description": "delete a particular article and all it's comments from the db",
     "queries": [],
