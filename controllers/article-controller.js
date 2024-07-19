@@ -60,7 +60,6 @@ const getArticles = (request, response, next) => {
   }
 };
 
-//hmmm been debating if this one should go into the comments controller and have good arguments for either case. any feedback on this welcomed
 const getArticleCommentsByArticleId = (request, response, next) => {
   const { article_id } = request.params;
   const { limit, page } = request.query;
