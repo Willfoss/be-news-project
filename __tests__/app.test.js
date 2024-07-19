@@ -26,6 +26,7 @@ describe("/api/topics testing", () => {
         });
     });
   });
+
   describe("POST", () => {
     test("POST 201: returns the new topic requested by the user", () => {
       return request(app)
@@ -97,6 +98,7 @@ describe("/api/topics/:topic", () => {
         });
     });
   });
+
   describe("DELETE", () => {
     test("DELETE 204: responds with a 204 status when a topic with no articles is deleted", () => {
       return request(app).delete("/api/topics/paper").expect(204);
@@ -165,6 +167,7 @@ describe("/api/articles/:article_id", () => {
         });
     });
   });
+
   describe("DELETE", () => {
     test("DELETE 204: responds with a 204 status upon successful deletion for an article with no comments", () => {
       return request(app).delete("/api/articles/2").expect(204);
@@ -223,6 +226,7 @@ describe("/api/articles", () => {
         });
     });
   });
+
   describe("GET QUERIES - order", () => {
     test("order ASC 200: responds with an array of article objects sorted in ascending order when ASC is specified and defaults to created_at if no sort_by provided", () => {
       return request(app)
@@ -251,6 +255,7 @@ describe("/api/articles", () => {
         });
     });
   });
+
   describe("GET QUERIES - sort_by", () => {
     test("sort_by article_id 200: responds with an array of article objects sorted by article_id and by default is ordered in descending order", () => {
       return request(app)
@@ -324,6 +329,7 @@ describe("/api/articles", () => {
         });
     });
   });
+
   describe("GET QUERIES - sort_by & order", () => {
     test("sort_by article_id ASC 200: responds with an array of article objects sorted by article_id and by ascending order when specified", () => {
       return request(app)
@@ -403,6 +409,7 @@ describe("/api/articles", () => {
         });
     });
   });
+
   describe("GET QUERIES - topic", () => {
     test("topic query 200: responds with an array of articles matching the topic query passed in", () => {
       return request(app)
@@ -899,6 +906,7 @@ describe("/api/articles/:article_id/comments)", () => {
         });
     });
   });
+
   describe("GET query - limit", () => {
     test("limit 200: responds with an array of objects of the specified query limit size", () => {
       return request(app)
@@ -943,6 +951,7 @@ describe("/api/articles/:article_id/comments)", () => {
         });
     });
   });
+
   describe("GET query - page", () => {
     test("page 200: returns the first page of the results when the page number is not specified", () => {
       return request(app)
@@ -1092,6 +1101,7 @@ describe("/api/articles/:article_id/comments)", () => {
         });
     });
   });
+
   describe("PATCH", () => {
     test("PATCH 200: responds with an article object to the client that contains an updated incremental votes value when the vote is positive", () => {
       return request(app)
@@ -1189,6 +1199,7 @@ describe("/api/comments/:comment_id tests", () => {
       return request(app).delete("/api/comments/99").expect(404);
     });
   });
+
   describe("PATCH", () => {
     test("PATCH 200: responds with the updated comment object including the the incremented new votes if a positive vote value given", () => {
       return request(app)
@@ -1302,6 +1313,7 @@ describe("/api/users testing", () => {
         });
     });
   });
+
   describe("POST", () => {
     test("POST 201: responds with the posted user object and the corresponding user details", () => {
       return request(app)
@@ -1400,6 +1412,7 @@ describe("/api/users/:username testing", () => {
         });
     });
   });
+
   describe("DELETE", () => {
     test("DELETE 204: responds with a 204 status when deleting a user that has no posts", () => {
       return request(app).delete("/api/users/lurker").expect(204);
