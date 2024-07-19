@@ -37,8 +37,8 @@ const fetchArticles = (sort_by = "created_at", order = "desc", topic, author, li
     queryArray.push(topic);
     queryArray.push(author);
   } else if (topic && !author) {
-    queryString1 += ` WHERE topic = $1`;
-    queryString2 += ` WHERE topic = $1`;
+    queryString1 += ` WHERE articles.topic = $1`;
+    queryString2 += ` WHERE articles.topic = $1`;
     queryArray.push(topic);
   } else if (author && !topic) {
     queryString1 += ` WHERE articles.author = $1`;

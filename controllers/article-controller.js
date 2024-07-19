@@ -1,4 +1,4 @@
-const db = require("../db/connection");
+const { totalCount } = require("../db/connection");
 const {
   fetchArticleById,
   fetchArticles,
@@ -27,16 +27,15 @@ const getArticles = (request, response, next) => {
 
   if (topic && author) {
     Promise.all([fetchTopicByTopic(topic), fetchUserByUsername(author), fetchArticles(sort_by, order, topic, author, limit, page)])
-      .then(([doesTopicExist, doesAuthorExist, [articles, total_count]]) => {
+      .then(([doesTopicExists, doesAuthorExist, [articles, total_count]]) => {
         return response.send({ articles, total_count });
       })
       .catch((error) => {
         next(error);
       });
-  }
-  if (topic && !author) {
+  } else if (topic && !author) {
     Promise.all([fetchTopicByTopic(topic), fetchArticles(sort_by, order, topic, author, limit, page)])
-      .then(([doesTopicExist, [articles, total_count]]) => {
+      .then(([doesTopicExists, [articles, total_count]]) => {
         return response.send({ articles, total_count });
       })
       .catch((error) => {
@@ -44,7 +43,7 @@ const getArticles = (request, response, next) => {
       });
   } else if (author && !topic) {
     Promise.all([fetchUserByUsername(author), fetchArticles(sort_by, order, topic, author, limit, page)])
-      .then(([doesAuthorExist, [articles, total_count]]) => {
+      .then(([doesAuthorExists, [articles, total_count]]) => {
         return response.send({ articles, total_count });
       })
       .catch((error) => {
@@ -61,6 +60,7 @@ const getArticles = (request, response, next) => {
   }
 };
 
+//hmmm been debating if this one should go into the comments controller and have good arguments for either case. any feedback on this welcomed
 const getArticleCommentsByArticleId = (request, response, next) => {
   const { article_id } = request.params;
   const { limit, page } = request.query;
