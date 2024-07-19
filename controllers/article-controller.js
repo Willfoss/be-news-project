@@ -27,11 +27,7 @@ const getArticles = (request, response, next) => {
   if (topic) {
     Promise.all([fetchTopicByTopic(topic), fetchArticles(sort_by, order, topic, limit, page)])
       .then(([doesTopicExists, articles]) => {
-        if (articles.length === 1) {
-          return response.send({ articles: articles[0] });
-        } else {
-          return response.send({ articles: articles[0], total_count: articles[1] });
-        }
+        return response.send({ articles: articles[0], total_count: articles[1] });
       })
       .catch((error) => {
         next(error);
@@ -39,11 +35,7 @@ const getArticles = (request, response, next) => {
   } else {
     fetchArticles(sort_by, order, topic, limit, page)
       .then((articles) => {
-        if (articles.length === 1) {
-          return response.send({ articles: articles[0] });
-        } else {
-          return response.send({ articles: articles[0], total_count: articles[1] });
-        }
+        return response.send({ articles: articles[0], total_count: articles[1] });
       })
       .catch((error) => {
         next(error);
