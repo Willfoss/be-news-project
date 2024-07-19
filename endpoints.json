@@ -182,7 +182,7 @@
       "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
     }
   },
-  "DELETE /api/articles": {
+  "DELETE /api/articles/:article_id": {
     "description": "delete a particular article and all it's comments from the db",
     "queries": [],
     "exampleResponse": "not response send with this endpoint"
