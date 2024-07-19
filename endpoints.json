@@ -76,41 +76,6 @@
       ]
     }
   },
-  "POST /api/articles/:article_id/comments": {
-    "description": "serves a comment object containing the details of the comment",
-    "queries": ["limit", "page"],
-    "exampleResponse": {
-      "comment": {
-        "article_id": 1,
-        "comment_id": 1,
-        "author": "Douglas",
-        "votes": 33,
-        "created_at": "2018-05-30T15:59:13.341Z",
-        "body": "what do you call a man without a spade on his head?"
-      }
-    }
-  },
-  "PATCH /api/articles/:article_id": {
-    "description": "serves an updated articles object with it's corresponding properties",
-    "queries": [],
-    "exampleResponse": {
-      "comment": {
-        "article_id": 3,
-        "title": "Eight pug gifs that remind me of mitch",
-        "topic": "mitch",
-        "author": "icellusedkars",
-        "body": "some gifs",
-        "votes": 1,
-        "created_at": "2018-05-30T15:59:13.341Z",
-        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-      }
-    }
-  },
-  "DELETE /api/comments/:comment_id": {
-    "description": "Deletes a comment",
-    "queries": [],
-    "exampleResponse": "this does not send a response body"
-  },
   "GET /api/users": {
     "description": "serves an array of user objects",
     "queries": [],
@@ -137,6 +102,22 @@
         "username": "butter_bridge",
         "name": "jonny",
         "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "serves an updated articles object with it's corresponding properties",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "article_id": 3,
+        "title": "Eight pug gifs that remind me of mitch",
+        "topic": "mitch",
+        "author": "icellusedkars",
+        "body": "some gifs",
+        "votes": 1,
+        "created_at": "2018-05-30T15:59:13.341Z",
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
       }
     }
   },
@@ -171,6 +152,20 @@
       }
     }
   },
+  "POST /api/articles/:article_id/comments": {
+    "description": "serves a comment object containing the details of the comment",
+    "queries": ["limit", "page"],
+    "exampleResponse": {
+      "comment": {
+        "article_id": 1,
+        "comment_id": 1,
+        "author": "Douglas",
+        "votes": 33,
+        "created_at": "2018-05-30T15:59:13.341Z",
+        "body": "what do you call a man without a spade on his head?"
+      }
+    }
+  },
   "POST /api/topics": {
     "description": "serves an object with the details of body sent in the request",
     "queries": [],
@@ -182,5 +177,10 @@
     "description": "delete a particular article and all it's comments from the db",
     "queries": [],
     "exampleResponse": "not response send with this endpoint"
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "Deletes a comment",
+    "queries": [],
+    "exampleResponse": "this does not send a response body"
   }
 }
