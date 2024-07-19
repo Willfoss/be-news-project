@@ -1175,6 +1175,15 @@ describe("/api/articles/:article_id/comments)", () => {
           expect(body.message).toBe("bad request");
         });
     });
+    test("Patch 400: responds with a bad request error message if an empty object is sent", () => {
+      return request(app)
+        .patch("/api/articles/3")
+        .send({})
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
     test("Patch 404: responds with a not found error message if the article id is of the correct data type but does not yet exist in the db", () => {
       return request(app)
         .patch("/api/articles/999")
