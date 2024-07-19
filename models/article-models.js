@@ -38,15 +38,12 @@ const fetchArticles = (sort_by = "created_at", order = "desc", topic, limit = 10
     queryArray.push(topic);
   }
 
-  const offset = limit * page - limit;
+  const offset = (page - 1) * limit;
 
-  queryString1 += ` GROUP BY articles.article_id`;
-  queryString1 += ` ORDER BY ${sort_by} ${order}`;
-  queryString1 += ` LIMIT ${limit}`;
-
-  if (page > 1) {
-    queryString1 += ` OFFSET ${offset}`;
-  }
+  queryString1 += ` GROUP BY articles.article_id 
+  ORDER BY ${sort_by} ${order} 
+  LIMIT ${limit} 
+  OFFSET ${offset}`;
 
   return db
     .query(queryString1, queryArray)

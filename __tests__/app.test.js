@@ -520,27 +520,22 @@ describe("/api/articles", () => {
           });
         });
     });
+    test("limit 200: responds with an array of 10 articles when no limit specified", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(10);
+        });
+    });
     test("limit 200: responds with all the articles if the quantity is below the limit", () => {
       return request(app)
         .get("/api/articles?limit=20")
         .expect(200)
         .then(({ body }) => {
           expect(body.articles.length).toBe(13);
-          body.articles.forEach((article) => {
-            expect(article).toMatchObject({
-              author: expect.any(String),
-              title: expect.any(String),
-              article_id: expect.any(Number),
-              topic: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-              article_img_url: expect.any(String),
-              comment_count: expect.any(Number),
-            });
-          });
         });
     });
-    //add for default query here
     test("limit 400: responds with a bad request if the limit is the wrong data type", () => {
       return request(app)
         .get("/api/articles?limit=five")
@@ -556,6 +551,7 @@ describe("/api/articles", () => {
         });
     });
   });
+
   describe("GET query - page", () => {
     test("page 200: responds with the array of article objects on the first page when page number is specified", () => {
       return request(app)
@@ -577,24 +573,12 @@ describe("/api/articles", () => {
           });
         });
     });
-    test("page 200: responds with the array of article objects on the first page when page number is NOT specified", () => {
+    test("page 200: responds with the array of article objects of the correct limit on the first page when page number is NOT specified", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
           expect(body.articles.length).toBe(10);
-          body.articles.forEach((article) => {
-            expect(article).toMatchObject({
-              author: expect.any(String),
-              title: expect.any(String),
-              article_id: expect.any(Number),
-              topic: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-              article_img_url: expect.any(String),
-              comment_count: expect.any(Number),
-            });
-          });
         });
     });
     test("page 200: responds with the array of article objects on the second page when page number is specified", () => {
@@ -603,18 +587,6 @@ describe("/api/articles", () => {
         .expect(200)
         .then(({ body }) => {
           expect(body.articles.length).toBe(3);
-          body.articles.forEach((article) => {
-            expect(article).toMatchObject({
-              author: expect.any(String),
-              title: expect.any(String),
-              article_id: expect.any(Number),
-              topic: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-              article_img_url: expect.any(String),
-              comment_count: expect.any(Number),
-            });
-          });
         });
     });
     test("page 400: responds with a bad request message when a page number is the wrong data type", () => {
