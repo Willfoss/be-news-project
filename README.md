@@ -1,6 +1,6 @@
 # News API
 
-A fully tested backend project based on reddit. This project uses REST APIs to interact with data from a news website database. The endpoints give information about:
+A fully tested backend project based on reddit. This project has various endpoints to interact with data from a news website database. The endpoints give information about:
 
 1. topics,
 2. articles related to those topics,
@@ -55,7 +55,11 @@ then run the seed file
 
 to run the test file, run the following command
 
-    npm run test
+    npm test
+
+note there is a utility test file as well. to just run the main testing file for the project use:
+
+    npm test app.test.js
 
 ---
 
