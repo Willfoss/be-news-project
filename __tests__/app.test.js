@@ -77,7 +77,7 @@ describe("/api/topics testing", () => {
 
 describe("/api/topics/:topic", () => {
   describe("GET", () => {
-    test("Get 200: returns a topic object that's associated with the provided topci", () => {
+    test("GET 200: returns a topic object that's associated with the provided topci", () => {
       return request(app)
         .get("/api/topics/mitch")
         .expect(200)
@@ -91,6 +91,22 @@ describe("/api/topics/:topic", () => {
     test("GET 404: reponds with a not found message if sending an endpoint with the wrong data type", () => {
       return request(app)
         .get("/api/topics/i-do-not-exist")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+  });
+  describe("DELETE", () => {
+    test("DELETE 204: responds with a 204 status when a topic with no articles is deleted", () => {
+      return request(app).delete("/api/topics/paper").expect(204);
+    });
+    test("DELETE 204: responds with a 204 status when a topic that has articles and those articles have comments is deleted", () => {
+      return request(app).delete("/api/topics/mitch").expect(204);
+    });
+    test("DELETE 404: responds with a 404 status when a topic thats requested to be deleted does not exist", () => {
+      return request(app)
+        .delete("/api/topics/bob")
         .expect(404)
         .then(({ body }) => {
           expect(body.message).toBe("not found");

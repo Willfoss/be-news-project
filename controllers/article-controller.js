@@ -1,4 +1,3 @@
-const { totalCount } = require("../db/connection");
 const {
   fetchArticleById,
   fetchArticles,

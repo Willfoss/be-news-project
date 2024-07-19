@@ -24,4 +24,13 @@ const insertTopic = (slug, description) => {
   });
 };
 
-module.exports = { fetchTopicByTopic, fetchTopics, insertTopic };
+const removeTopicByTopic = (slug) => {
+  const queryString = `DELETE FROM topics WHERE slug = $1`;
+  return db.query(queryString, [slug]).then(({ rowCount }) => {
+    if (rowCount === 0) {
+      return Promise.reject({ status: 404, message: "not found" });
+    }
+  });
+};
+
+module.exports = { fetchTopicByTopic, fetchTopics, insertTopic, removeTopicByTopic };
