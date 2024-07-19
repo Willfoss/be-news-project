@@ -182,5 +182,15 @@
     "description": "Deletes a comment",
     "queries": [],
     "exampleResponse": "this does not send a response body"
+  },
+  "DELETE /api/topics/:topic": {
+    "description": "Deletes a topic and all associated articles/comments from that topic",
+    "queries": [],
+    "exampleResponse": "this does not send a response body"
+  },
+  "DELETE /api/users/:username": {
+    "description": "Deletes a user and all associated topics/articles/comments from that topic",
+    "queries": [],
+    "exampleResponse": "this does not send a response body"
   }
 }

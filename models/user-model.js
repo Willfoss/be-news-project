@@ -20,4 +20,14 @@ const fetchUserByUsername = (id) => {
   });
 };
 
-module.exports = { fetchUsers, fetchUserByUsername };
+const removeUserByUsername = (username) => {
+  const queryString = `DELETE FROM users WHERE username = $1`;
+
+  return db.query(queryString, [username]).then(({ rowCount }) => {
+    if (rowCount === 0) {
+      return Promise.reject({ status: 404, message: "not found" });
+    }
+  });
+};
+
+module.exports = { fetchUsers, fetchUserByUsername, removeUserByUsername };

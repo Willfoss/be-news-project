@@ -1327,6 +1327,22 @@ describe("/api/users/:username testing", () => {
         });
     });
   });
+  describe("DELETE", () => {
+    test("DELETE 204: responds with a 204 status when deleting a user that has no posts", () => {
+      return request(app).delete("/api/users/lurker").expect(204);
+    });
+    test("DELETE 204: responds witha  204 status when deleting a user that has made articles/posts/comment and deleted those as well", () => {
+      return request(app).delete("/api/users/butter_bridge").expect(204);
+    });
+    test("DELETE 404: responds witha  404 status when the user is not found", () => {
+      return request(app)
+        .delete("/api/users/will")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+  });
 });
 
 describe("api path does not exist tests", () => {

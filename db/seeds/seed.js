@@ -36,7 +36,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
         article_id SERIAL PRIMARY KEY,
         title VARCHAR NOT NULL,
         topic VARCHAR NOT NULL REFERENCES topics(slug) ON DELETE CASCADE,
-        author VARCHAR NOT NULL REFERENCES users(username),
+        author VARCHAR NOT NULL REFERENCES users(username) ON DELETE CASCADE,
         body VARCHAR NOT NULL,
         created_at TIMESTAMP DEFAULT NOW(),
         votes INT DEFAULT 0 NOT NULL,
@@ -49,7 +49,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
         comment_id SERIAL PRIMARY KEY,
         body VARCHAR NOT NULL,
         article_id INT REFERENCES articles(article_id) ON DELETE CASCADE NOT NULL,
-        author VARCHAR REFERENCES users(username) NOT NULL,
+        author VARCHAR REFERENCES users(username) ON DELETE CASCADE NOT NULL,
         votes INT DEFAULT 0 NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
       );`);

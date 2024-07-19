@@ -1,4 +1,4 @@
-const { fetchUsers, fetchUserByUsername } = require("../models/user-model");
+const { fetchUsers, fetchUserByUsername, removeUserByUsername } = require("../models/user-model");
 
 const getUsers = (request, response, next) => {
   fetchUsers()
@@ -21,4 +21,15 @@ const getUserByUsername = (request, response, next) => {
     });
 };
 
-module.exports = { getUsers, getUserByUsername };
+const deleteUserByUsername = (request, response, next) => {
+  const { username } = request.params;
+  removeUserByUsername(username)
+    .then(() => {
+      return response.sendStatus(204);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+module.exports = { getUsers, getUserByUsername, deleteUserByUsername };
