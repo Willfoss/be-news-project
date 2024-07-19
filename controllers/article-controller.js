@@ -26,16 +26,16 @@ const getArticles = (request, response, next) => {
 
   if (topic) {
     Promise.all([fetchTopicByTopic(topic), fetchArticles(sort_by, order, topic, limit, page)])
-      .then(([doesTopicExists, articles]) => {
-        return response.send({ articles: articles[0], total_count: articles[1] });
+      .then(([doesTopicExists, [articles, total_count]]) => {
+        return response.send({ articles, total_count });
       })
       .catch((error) => {
         next(error);
       });
   } else {
     fetchArticles(sort_by, order, topic, limit, page)
-      .then((articles) => {
-        return response.send({ articles: articles[0], total_count: articles[1] });
+      .then(([articles, total_count]) => {
+        return response.send({ articles, total_count });
       })
       .catch((error) => {
         next(error);
