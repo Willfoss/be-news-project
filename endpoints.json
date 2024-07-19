@@ -183,12 +183,12 @@
     }
   },
   "DELETE /api/articles/:article_id": {
-    "description": "delete a particular article and all it's comments from the db",
+    "description": "Deletes a particular article and all it's comments from the db",
     "queries": [],
     "exampleResponse": "this does not send a response body"
   },
   "DELETE /api/comments/:comment_id": {
-    "description": "Deletes a comment",
+    "description": "Deletes a comment from an associated article",
     "queries": [],
     "exampleResponse": "this does not send a response body"
   },
