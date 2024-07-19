@@ -13,7 +13,7 @@ A fully tested backend project based on reddit. This project uses REST APIs to f
 
 ## Project setup
 
-clone the repo using the following links:
+clone the repo using the following terminal commands:
 
 ##### HTTP
 
