@@ -198,7 +198,7 @@
     "exampleResponse": "this does not send a response body"
   },
   "DELETE /api/users/:username": {
-    "description": "Deletes a user and all associated topics/articles/comments from that topic",
+    "description": "Deletes a user and all associated topics/articles/comments from that user",
     "queries": [],
     "exampleResponse": "this does not send a response body"
   }
