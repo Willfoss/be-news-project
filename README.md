@@ -1,6 +1,6 @@
 # News API
 
-A fully tested backend project based on reddit. This project uses REST APIs to fetch data from a news website database. The endpoints give information about:
+A fully tested backend project based on reddit. This project uses REST APIs to interact with data from a news website database. The endpoints give information about:
 
 1. topics,
 2. articles related to those topics,
