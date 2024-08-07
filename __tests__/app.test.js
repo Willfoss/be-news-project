@@ -667,13 +667,6 @@ describe("/api/articles", () => {
           expect(body.message).toBe("bad request");
         });
     });
-    test("limit 400: responds with a bad request if the limit is outside the range of 3 - 25", () => {
-      return request(app)
-        .get("/api/articles?limit=30")
-        .then(({ body }) => {
-          expect(body.message).toBe("bad request");
-        });
-    });
   });
 
   describe("GET query - page", () => {
@@ -937,14 +930,6 @@ describe("/api/articles/:article_id/comments)", () => {
     test("limit 400: responds with a bad request message if the limit is the wrong datatype", () => {
       return request(app)
         .get("/api/articles/1/comments?limit=ten")
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.message).toBe("bad request");
-        });
-    });
-    test("limit 400: responds with a bad request message if the limit is outside of the range 3-25", () => {
-      return request(app)
-        .get("/api/articles/1/comments?limit=26")
         .expect(400)
         .then(({ body }) => {
           expect(body.message).toBe("bad request");

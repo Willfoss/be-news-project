@@ -27,7 +27,7 @@ const fetchArticles = (sort_by = "created_at", order = "desc", topic, author, li
 
   let queryString2 = "SELECT article_id FROM articles";
 
-  if (!validSortBys.includes(sort_by) || !validOrders.includes(order) || Number.isNaN(+limit) || Number.isNaN(+page) || limit < 3 || limit > 25) {
+  if (!validSortBys.includes(sort_by) || !validOrders.includes(order) || Number.isNaN(+limit) || Number.isNaN(+page)) {
     return Promise.reject({ status: 400, message: "bad request" });
   }
 
