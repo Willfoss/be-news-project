@@ -49,7 +49,7 @@ const fetchArticles = (sort_by = "created_at", order = "desc", topic, author, li
   const offset = (page - 1) * limit;
 
   queryString1 += ` GROUP BY articles.article_id 
-  ORDER BY ${sort_by} ${order} 
+  ORDER BY ${sort_by} ${order}, articles.article_id ${order} 
   LIMIT ${limit} 
   OFFSET ${offset}`;
 
