@@ -7,6 +7,8 @@ require("dotenv").config({
 
 const config = {};
 
+console.log(process.env.DATABASE_URL, "DATABASE URL");
+
 if (ENV === "production") {
   config.connectionString = process.env.DATABASE_URL;
   config.max = 2;
